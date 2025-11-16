@@ -1,6 +1,6 @@
 {
   "name": "GC Ride",
-  "short_name": "GCRide",
+  "short_name": "Go",
   "description": "Servicio de Transporte",
   "start_url": "/",
   "display": "standalone",
@@ -19,4 +19,5 @@
       "type": "image/png"
     }
   ]
+
 }
