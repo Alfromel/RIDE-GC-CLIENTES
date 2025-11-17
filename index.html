@@ -4,23 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GC Ride - Cliente</title>
-    <meta name="theme-color" content="#2e7d32">
+    <meta name="theme-color" content="#1a472a">
     <meta name="description" content="Servicio de Transporte GC Ride">
     
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
     
-
-
-
- <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
- <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
- <link rel="shortcut icon" href="/favicon.ico" />
- <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
- <meta name="apple-mobile-web-app-title" content="Ride" />
- <link rel="manifest" href="/site.webmanifest" />
-
-
+    <!-- Iconos para PWA -->
+    <link rel="icon" href="icon-192.png" type="image/png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
@@ -28,22 +21,34 @@
     
     <style>
         :root {
-            --primary-color: #2e7d32;
-            --primary-dark: #1b5e20;
-            --primary-light: #4caf50;
-            --accent-color: #8bc34a;
+            --primary-color: #1a472a;
+            --primary-dark: #0d2e1a;
+            --primary-light: #2e7d32;
+            --accent-color: #4caf50;
             --text-color: #333;
-            --light-gray: #f5f5f5;
-            --gray: #9e9e9e;
-            --dark-gray: #616161;
+            --light-gray: #f8f9fa;
+            --gray: #6c757d;
+            --dark-gray: #495057;
+            --border-color: #e0e0e0;
+            --card-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            --elevated-shadow: 0 4px 15px rgba(0,0,0,0.12);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         
         body {
-            background-color: #f5f5f5;
+            background-color: #f8f9fa;
             min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             padding: 0;
             margin: 0;
+            color: var(--text-color);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
         
         .app-container {
@@ -51,121 +56,180 @@
             margin: 0 auto;
             background: white;
             min-height: 100vh;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
             position: relative;
+            overflow-x: hidden;
         }
         
+        /* Header mejorado */
         .app-header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            background: var(--primary-color);
             color: white;
-            padding: 15px 20px;
+            padding: 16px 20px;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-name {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+            font-size: 0.9rem;
         }
         
         .app-content {
             padding: 20px;
-            padding-bottom: 80px;
+            padding-bottom: 90px;
         }
         
+        /* Cards mejoradas */
         .app-card {
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
             margin-bottom: 20px;
             border: none;
             overflow: hidden;
-            transition: transform 0.3s;
+            transition: all 0.3s ease;
         }
         
         .app-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+            box-shadow: var(--elevated-shadow);
         }
         
         .app-card-header {
-            background: linear-gradient(135deg, var(--primary-light) 0%, #e8f5e9 100%);
-            border-bottom: 1px solid #e9ecef;
-            padding: 15px 20px;
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+            padding: 18px 20px;
             font-weight: 600;
-            color: var(--primary-dark);
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
         }
         
         .app-card-body {
             padding: 20px;
         }
         
+        /* Botones mejorados */
         .app-btn {
-            border-radius: 50px;
-            padding: 12px 25px;
+            border-radius: 12px;
+            padding: 14px 20px;
             font-weight: 600;
             border: none;
             transition: all 0.3s;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         
         .app-btn-primary {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+            background: var(--primary-color);
             color: white;
         }
         
         .app-btn-primary:hover {
-            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(46, 125, 50, 0.4);
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(26, 71, 42, 0.3);
+        }
+        
+        .app-btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--dark-gray);
+        }
+        
+        .app-btn-outline:hover {
+            background: var(--light-gray);
+            border-color: var(--gray);
         }
         
         .app-form-control {
-            border-radius: 10px;
-            padding: 12px 15px;
-            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 14px 16px;
+            border: 1px solid var(--border-color);
             transition: all 0.3s;
+            font-size: 1rem;
         }
         
         .app-form-control:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.2);
+            box-shadow: 0 0 0 3px rgba(26, 71, 42, 0.1);
         }
         
+        /* Mapa mejorado */
         #map {
-            height: 300px;
+            height: 280px;
             width: 100%;
-            border-radius: 10px;
-            margin-top: 15px;
+            border-radius: 12px;
+            margin-top: 10px;
+            border: 1px solid var(--border-color);
         }
         
+        /* Tarjetas de conductores mejoradas */
         .driver-card {
             background: white;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            border-left: 4px solid var(--primary-color);
-            transition: all 0.3s;
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 16px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
         }
         
         .driver-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            box-shadow: var(--elevated-shadow);
         }
         
-        .user-avatar {
-            width: 40px;
-            height: 40px;
+        .driver-avatar {
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-            background: rgba(46, 125, 50, 0.2);
+            background: rgba(26, 71, 42, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
+            font-weight: 600;
             color: var(--primary-color);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-size: 1.1rem;
         }
         
         .badge-status {
             border-radius: 20px;
-            padding: 5px 12px;
+            padding: 6px 14px;
             font-size: 0.8rem;
             font-weight: 600;
         }
@@ -180,13 +244,14 @@
             color: white;
         }
         
+        /* Información de viaje mejorada */
         .ride-info {
             background: white;
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 20px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            border-left: 4px solid #ff9800;
+            margin-bottom: 20px;
+            box-shadow: var(--elevated-shadow);
+            border: 1px solid var(--border-color);
         }
         
         .progress-container {
@@ -194,47 +259,56 @@
         }
         
         .progress {
-            height: 10px;
-            border-radius: 5px;
+            height: 8px;
+            border-radius: 4px;
             background-color: #e9ecef;
         }
         
         .progress-bar {
             height: 100%;
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
-            border-radius: 5px;
+            border-radius: 4px;
         }
         
+        /* Pantalla de registro mejorada */
         .registration-container {
             background: white;
             height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 20px;
+            padding: 30px;
         }
         
         .brand {
             color: var(--primary-color);
-            font-weight: bold;
-            font-size: 2.5rem;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-weight: 700;
+            font-size: 2.8rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 8px;
         }
         
+        .brand-subtitle {
+            color: var(--gray);
+            font-size: 1rem;
+            margin-bottom: 40px;
+        }
+        
+        /* Botones flotantes mejorados */
         .floating-action-btn {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 25px;
+            right: 25px;
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+            background: var(--primary-color);
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
-            box-shadow: 0 6px 20px rgba(46, 125, 50, 0.5);
+            box-shadow: 0 6px 20px rgba(26, 71, 42, 0.4);
             z-index: 100;
             border: none;
             transition: all 0.3s;
@@ -242,30 +316,70 @@
         
         .floating-action-btn:hover {
             transform: scale(1.1);
-            box-shadow: 0 8px 25px rgba(46, 125, 50, 0.7);
+            box-shadow: 0 8px 25px rgba(26, 71, 42, 0.6);
         }
         
+        .install-btn {
+            position: fixed;
+            bottom: 95px;
+            right: 25px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
+            z-index: 100;
+            border: none;
+            transition: all 0.3s;
+        }
+        
+        .install-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(255, 152, 0, 0.6);
+        }
+        
+        /* Detalles de conductor mejorados */
         .driver-details {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 10px;
+            gap: 14px;
+            margin-bottom: 12px;
         }
         
         .driver-info {
             flex-grow: 1;
         }
         
+        .driver-name {
+            font-weight: 600;
+            font-size: 1.05rem;
+            margin-bottom: 2px;
+        }
+        
+        .driver-vehicle {
+            color: var(--gray);
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+        }
+        
         .driver-rating {
             color: #ffc107;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
         
         .distance-badge {
-            background: var(--primary-light);
-            color: var(--primary-dark);
-            border-radius: 15px;
-            padding: 4px 10px;
+            background: rgba(26, 71, 42, 0.1);
+            color: var(--primary-color);
+            border-radius: 16px;
+            padding: 6px 12px;
             font-size: 0.8rem;
             font-weight: 600;
         }
@@ -276,39 +390,100 @@
         
         @keyframes pulse {
             0% {
-                box-shadow: 0 0 0 0 rgba(46, 125, 50, 0.7);
+                box-shadow: 0 0 0 0 rgba(26, 71, 42, 0.7);
             }
             70% {
-                box-shadow: 0 0 0 10px rgba(46, 125, 50, 0);
+                box-shadow: 0 0 0 10px rgba(26, 71, 42, 0);
             }
             100% {
-                box-shadow: 0 0 0 0 rgba(46, 125, 50, 0);
+                box-shadow: 0 0 0 0 rgba(26, 71, 42, 0);
             }
         }
         
-        /* Estilos para el botón de instalación */
-        .install-btn {
-            position: fixed;
-            bottom: 90px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%);
-            color: white;
+        /* Estados de carga mejorados */
+        .loading-container {
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            box-shadow: 0 6px 20px rgba(255, 152, 0, 0.5);
-            z-index: 100;
-            border: none;
-            transition: all 0.3s;
+            padding: 40px 20px;
         }
         
-        .install-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 25px rgba(255, 152, 0, 0.7);
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(26, 71, 42, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Sección sin conductores */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        .empty-icon {
+            font-size: 3.5rem;
+            color: var(--gray);
+            margin-bottom: 16px;
+            opacity: 0.6;
+        }
+        
+        /* Mejoras de tipografía */
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .text-muted {
+            color: var(--gray) !important;
+        }
+        
+        /* Mejoras de formularios */
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--dark-gray);
+        }
+        
+        /* Separadores */
+        .divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 20px 0;
+        }
+        
+        /* Mejoras responsivas */
+        @media (max-width: 480px) {
+            .app-content {
+                padding: 16px;
+                padding-bottom: 90px;
+            }
+            
+            .app-card-header, .app-card-body {
+                padding: 16px;
+            }
+            
+            .driver-card {
+                padding: 16px;
+            }
         }
     </style>
 </head>
@@ -317,19 +492,19 @@
         <!-- Pantalla de Registro -->
         <div id="registrationScreen" class="registration-container">
             <div class="text-center mb-5">
-                <h1 class="brand mb-2">GC Ride</h1>
-                <p class="text-muted">Servicio de Transporte</p>
+                <h1 class="brand">GC Ride</h1>
+                <p class="brand-subtitle">Servicio de Transporte</p>
             </div>
             <form id="registrationForm">
-                <div class="mb-3">
+                <div class="mb-4">
                     <label for="clientName" class="form-label">Tu Nombre</label>
-                    <input type="text" class="form-control app-form-control" id="clientName" required>
+                    <input type="text" class="form-control app-form-control" id="clientName" placeholder="Ingresa tu nombre completo" required>
                 </div>
                 <div class="mb-4">
                     <label for="clientAge" class="form-label">Tu Edad</label>
-                    <input type="number" class="form-control app-form-control" id="clientAge" min="18" max="100" required>
+                    <input type="number" class="form-control app-form-control" id="clientAge" min="18" max="100" placeholder="Ingresa tu edad" required>
                 </div>
-                <button type="submit" class="btn app-btn app-btn-primary w-100 text-white pulse-animation">
+                <button type="submit" class="btn app-btn app-btn-primary w-100 pulse-animation">
                     <i class="bi bi-car-front me-2"></i> Comenzar
                 </button>
             </form>
@@ -340,10 +515,9 @@
         <div id="mainScreen" class="d-none">
             <!-- Header de la app -->
             <div class="app-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <small id="clientNameDisplay" class="fw-bold"></small>
-                    </div>
+                <div class="header-title">GC Ride</div>
+                <div class="user-profile">
+                    <span class="user-name" id="clientNameDisplay"></span>
                     <div class="user-avatar">
                         <span id="userInitial">C</span>
                     </div>
@@ -354,14 +528,14 @@
             <div class="app-content">
                 <!-- Mapa -->
                 <div class="app-card">
-                    <div class="app-card-header d-flex align-items-center">
-                        <i class="bi bi-geo-alt me-2"></i>
+                    <div class="app-card-header">
+                        <i class="bi bi-geo-alt-fill"></i>
                         <span>Tu Ubicación</span>
                     </div>
                     <div class="app-card-body">
                         <div id="map"></div>
                         <div class="mt-3">
-                            <button id="updateLocationBtn" class="btn app-btn app-btn-primary w-100">
+                            <button id="updateLocationBtn" class="btn app-btn app-btn-outline w-100">
                                 <i class="bi bi-arrow-clockwise me-2"></i> Actualizar Mi Ubicación
                             </button>
                         </div>
@@ -370,42 +544,41 @@
 
                 <!-- Conductores Disponibles -->
                 <div id="driversSection">
-                    <div class="app-card">
-                        <div class="app-card-header d-flex align-items-center">
-                            <i class="bi bi-car-front me-2"></i>
-                            <span>Conductores Disponibles</span>
-                        </div>
-                        <div class="app-card-body">
-                            <div id="loadingDrivers" class="text-center py-4">
-                                <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">Cargando...</span>
-                                </div>
-                                <p class="mt-2 text-muted">Buscando conductores cerca de ti...</p>
-                            </div>
-                            <div id="driversList">
-                                <!-- Los conductores aparecerán aquí -->
-                            </div>
-                            <div id="noDrivers" class="text-center py-4 d-none">
-                                <i class="bi bi-car-front text-muted" style="font-size: 3rem;"></i>
-                                <p class="mt-2 text-muted">No hay conductores disponibles en este momento</p>
-                            </div>
-                        </div>
+                    <h3 class="section-title">
+                        <i class="bi bi-car-front-fill"></i>
+                        <span>Conductores Disponibles</span>
+                    </h3>
+                    
+                    <div id="loadingDrivers" class="loading-container">
+                        <div class="loading-spinner"></div>
+                        <p class="text-muted">Buscando conductores cerca de ti...</p>
+                    </div>
+                    
+                    <div id="driversList">
+                        <!-- Los conductores aparecerán aquí -->
+                    </div>
+                    
+                    <div id="noDrivers" class="empty-state d-none">
+                        <i class="bi bi-car-front empty-icon"></i>
+                        <p class="text-muted">No hay conductores disponibles en este momento</p>
                     </div>
                 </div>
 
                 <!-- Solicitud de Viaje -->
                 <div id="rideRequestSection" class="d-none">
                     <div class="app-card">
-                        <div class="app-card-header d-flex align-items-center">
-                            <i class="bi bi-hourglass-split me-2"></i>
+                        <div class="app-card-header">
+                            <i class="bi bi-hourglass-split"></i>
                             <span>Solicitando Viaje</span>
                         </div>
                         <div class="app-card-body">
-                            <div id="rideRequestInfo">
-                                <!-- Información de la solicitud -->
+                            <div id="rideRequestInfo" class="loading-container">
+                                <div class="loading-spinner"></div>
+                                <h6>Esperando respuesta del conductor...</h6>
+                                <p class="text-muted mt-2">Tu solicitud ha sido enviada</p>
                             </div>
-                            <div class="mt-3">
-                                <button id="cancelRideBtn" class="btn btn-danger w-100">
+                            <div class="mt-4">
+                                <button id="cancelRideBtn" class="btn app-btn app-btn-outline w-100">
                                     <i class="bi bi-x-circle me-2"></i> Cancelar Solicitud
                                 </button>
                             </div>
@@ -416,32 +589,37 @@
                 <!-- Viaje Activo -->
                 <div id="activeRideSection" class="d-none">
                     <div class="ride-info">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="user-avatar me-3">
+                        <div class="driver-details">
+                            <div class="driver-avatar">
                                 <span id="driverInitial">D</span>
                             </div>
-                            <div class="flex-grow-1">
-                                <h6 class="mb-0" id="driverName">Conductor</h6>
-                                <small class="text-muted" id="vehicleInfo">Vehículo</small>
+                            <div class="driver-info">
+                                <h5 class="driver-name" id="driverName">Conductor</h5>
+                                <p class="driver-vehicle" id="vehicleInfo">Vehículo - Modelo</p>
+                                <div class="driver-rating">
+                                    <i class="bi bi-star-fill"></i> 4.8
+                                </div>
                             </div>
                             <span class="badge-riding badge-status">En Camino</span>
                         </div>
                         
+                        <div class="divider"></div>
+                        
                         <div class="progress-container">
-                            <div class="d-flex justify-content-between mb-1">
-                                <small>Recogida</small>
-                                <small id="etaText">Llegando en 5 min</small>
+                            <div class="d-flex justify-content-between mb-2">
+                                <small class="text-muted">Recogida</small>
+                                <small class="text-muted" id="etaText">Llegando en 5 min</small>
                             </div>
                             <div class="progress">
                                 <div id="rideProgress" class="progress-bar" style="width: 0%"></div>
                             </div>
                         </div>
                         
-                        <div class="mt-3">
-                            <button id="contactDriverBtn" class="btn btn-outline-primary w-100 mb-2">
+                        <div class="mt-4">
+                            <button id="contactDriverBtn" class="btn app-btn app-btn-outline w-100 mb-2">
                                 <i class="bi bi-telephone me-2"></i> Llamar al Conductor
                             </button>
-                            <button id="cancelActiveRideBtn" class="btn btn-outline-danger w-100">
+                            <button id="cancelActiveRideBtn" class="btn app-btn app-btn-outline w-100">
                                 <i class="bi bi-x-circle me-2"></i> Cancelar Viaje
                             </button>
                         </div>
@@ -451,7 +629,7 @@
 
             <!-- Botón flotante para nueva solicitud -->
             <button id="newRideBtn" class="floating-action-btn d-none" title="Solicitar nuevo viaje">
-                <i class="bi bi-plus"></i>
+                <i class="bi bi-plus-lg"></i>
             </button>
             
             <!-- Botón flotante para instalar la app -->
@@ -872,12 +1050,12 @@
                 return `
                 <div class="driver-card" onclick="requestRide(${driver.id})">
                     <div class="driver-details">
-                        <div class="user-avatar">
+                        <div class="driver-avatar">
                             <span>${driver.nombre.charAt(0)}</span>
                         </div>
                         <div class="driver-info">
-                            <h6 class="mb-0">${driver.nombre}</h6>
-                            <small class="text-muted">${driver.tipo_vehiculo} • ${driver.modelo_vehiculo}</small>
+                            <h5 class="driver-name">${driver.nombre}</h5>
+                            <p class="driver-vehicle">${driver.tipo_vehiculo} • ${driver.modelo_vehiculo}</p>
                             <div class="driver-rating">
                                 <i class="bi bi-star-fill"></i> ${rating}
                             </div>
@@ -887,7 +1065,7 @@
                             <small class="text-muted">${driver.asientos} asientos</small>
                         </div>
                     </div>
-                    <div class="mt-2">
+                    <div class="mt-3">
                         <button class="btn app-btn app-btn-primary w-100">
                             <i class="bi bi-car-front me-2"></i> Solicitar Viaje
                         </button>
@@ -945,20 +1123,6 @@
         function showRideRequestScreen() {
             document.getElementById('driversSection').classList.add('d-none');
             document.getElementById('rideRequestSection').classList.remove('d-none');
-            
-            // Obtener información del conductor
-            const driverId = currentRide.driver_id;
-            // En una implementación real, obtendrías los datos del conductor de la base de datos
-            const rideRequestInfo = document.getElementById('rideRequestInfo');
-            rideRequestInfo.innerHTML = `
-                <div class="text-center">
-                    <div class="spinner-border text-primary mb-3" role="status">
-                        <span class="visually-hidden">Cargando...</span>
-                    </div>
-                    <h6>Esperando respuesta del conductor...</h6>
-                    <p class="text-muted">Tu solicitud ha sido enviada</p>
-                </div>
-            `;
         }
 
         function startRideCheck() {
@@ -1207,5 +1371,4 @@
         window.requestRide = requestRide;
     </script>
 </body>
-
 </html>
