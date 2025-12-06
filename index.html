@@ -111,7 +111,7 @@
         }
         
         #map {
-            height: 300px;
+            height: 400px; /* Aumentado para mejor visibilidad */
             width: 100%;
             border-radius: 10px;
             margin-top: 15px;
@@ -294,6 +294,27 @@
             font-weight: 500;
         }
         
+        .instruction-box {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 2px solid #ff9800;
+            text-align: center;
+        }
+        
+        .instruction-box p {
+            margin: 0;
+            color: #e65100;
+            font-weight: 500;
+        }
+        
+        .instruction-box i {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            color: #ff9800;
+        }
+        
         @keyframes pulse {
             0% {
                 box-shadow: 0 0 0 0 rgba(46, 125, 50, 0.7);
@@ -312,6 +333,24 @@
             padding: 10px;
             max-height: 200px;
             overflow-y: auto;
+        }
+        
+        .map-instructions {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            font-size: 0.9rem;
+            max-width: 250px;
+        }
+        
+        .map-instructions i {
+            color: #ff9800;
+            margin-right: 5px;
         }
     </style>
 </head>
@@ -356,6 +395,14 @@
 
             <!-- Contenido principal -->
             <div class="app-content">
+                <!-- Instrucciones para el mapa -->
+                <div id="mapInstructions" class="instruction-box">
+                    <i class="bi bi-geo-alt"></i>
+                    <p><strong>¿Cómo seleccionar tu destino?</strong><br>
+                    <small>1. Tu ubicación actual aparece en azul<br>
+                    2. Toca cualquier lugar en el mapa para seleccionar tu destino (aparecerá en rojo)</small></p>
+                </div>
+
                 <!-- Solicitar Viaje -->
                 <div id="requestRideSection">
                     <div class="app-card">
@@ -370,20 +417,17 @@
                             </div>
                             
                             <div class="location-input">
-                                <label for="destinationInput">Destino</label>
-                                <input type="text" id="destinationInput" class="form-control app-form-control" placeholder="Ingresa tu destino" required>
-                                <small class="text-muted">Ej: Av. 16 de Julio, El Prado, etc.</small>
+                                <label for="destinationInput">Destino (Seleccionado en el mapa)</label>
+                                <input type="text" id="destinationInput" class="form-control app-form-control" placeholder="Toca un lugar en el mapa para seleccionar destino" readonly>
+                                <small class="text-muted">Destino seleccionado: <span id="selectedDestinationText">Ninguno</span></small>
                             </div>
                             
                             <div id="priceEstimate" class="price-display d-none">
-                                <h4 id="estimatedPrice">13 Bs</h4>
-                                <small id="priceDetail">Tarifa base</small>
+                                <h4 id="estimatedPrice">0 Bs</h4>
+                                <small id="priceDetail">Selecciona un destino para calcular el precio</small>
                             </div>
                             
                             <div class="mt-3">
-                                <button id="calculatePriceBtn" class="btn btn-outline-primary w-100 mb-2">
-                                    <i class="bi bi-calculator me-2"></i> Calcular Precio
-                                </button>
                                 <button id="requestRideBtn" class="btn app-btn app-btn-primary w-100" disabled>
                                     <i class="bi bi-car-front me-2"></i> Solicitar Viaje
                                 </button>
@@ -396,39 +440,17 @@
                 <div class="app-card">
                     <div class="app-card-header d-flex align-items-center">
                         <i class="bi bi-map me-2"></i>
-                        <span>Ruta del Viaje</span>
+                        <span>Selecciona tu destino en el mapa</span>
                     </div>
                     <div class="app-card-body">
                         <div id="map"></div>
                         <div class="mt-3">
-                            <button id="updateLocationBtn" class="btn app-btn app-btn-primary w-100">
+                            <button id="updateLocationBtn" class="btn app-btn app-btn-primary w-100 mb-2">
                                 <i class="bi bi-arrow-clockwise me-2"></i> Actualizar Mi Ubicación
                             </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Conductores Disponibles -->
-                <div id="driversSection" class="d-none">
-                    <div class="app-card">
-                        <div class="app-card-header d-flex align-items-center">
-                            <i class="bi bi-car-front me-2"></i>
-                            <span>Conductores Disponibles</span>
-                        </div>
-                        <div class="app-card-body">
-                            <div id="loadingDrivers" class="text-center py-4">
-                                <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">Cargando...</span>
-                                </div>
-                                <p class="mt-2 text-muted">Buscando conductores cerca de ti...</p>
-                            </div>
-                            <div id="driversList">
-                                <!-- Los conductores aparecerán aquí -->
-                            </div>
-                            <div id="noDrivers" class="text-center py-4 d-none">
-                                <i class="bi bi-car-front text-muted" style="font-size: 3rem;"></i>
-                                <p class="mt-2 text-muted">No hay conductores disponibles en este momento</p>
-                            </div>
+                            <button id="clearDestinationBtn" class="btn btn-outline-secondary w-100">
+                                <i class="bi bi-x-circle me-2"></i> Limpiar Destino
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -470,12 +492,12 @@
                                 <h6 class="mb-0" id="driverName">Conductor</h6>
                                 <small class="text-muted" id="vehicleInfo">Vehículo</small>
                             </div>
-                            <span class="badge-riding badge-status" id="rideStatusBadge">En Camino</span>
+                            <span id="rideStatusBadge" class="badge-riding badge-status">En Camino</span>
                         </div>
                         
                         <div class="progress-container">
                             <div class="d-flex justify-content-between mb-1">
-                                <small id="originAddress">Recogida</small>
+                                <small id="originAddress">Origen</small>
                                 <small id="etaText">Llegando en 5 min</small>
                             </div>
                             <div class="progress">
@@ -485,7 +507,7 @@
                         </div>
                         
                         <div class="price-display mt-3">
-                            <h4 id="ridePrice">13 Bs</h4>
+                            <h4 id="ridePrice">0 Bs</h4>
                             <small>Total a pagar</small>
                         </div>
                         
@@ -514,8 +536,6 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <!-- Leaflet Routing Machine -->
     <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
-    <!-- Nominatim para geocodificación -->
-    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
     
     <script>
         // Configuración de Supabase
@@ -526,9 +546,9 @@
         let currentClient = null;
         let clientMap = null;
         let clientMarker = null;
+        let destinationMarker = null;
         let watchId = null;
         let currentRide = null;
-        let driversCheckInterval = null;
         let rideCheckInterval = null;
         let routingControl = null;
         let originLatLng = null;
@@ -537,11 +557,11 @@
         let destinationAddress = '';
         let estimatedDistance = 0;
 
-        // Constantes de precios
-        const BASE_PRICE = 13; // Bs
-        const COMMUNITY_PRICE = 28; // Bs para comunidades lejanas
-        const PRICE_PER_KM = 3; // Bs por kilómetro para tramos largos
-        const BASE_DISTANCE_KM = 5; // Distancia base para tarifa fija
+        // Constantes de precios según los nuevos requerimientos
+        const BASE_PRICE = 13; // Bs para hasta 3km
+        const PRICE_PER_KM = 3; // Bs por kilómetro adicional
+        const BASE_DISTANCE_KM = 3; // Distancia base para tarifa fija
+        const COMMUNITY_PRICE = 28; // Bs para viajes base de más de 3km
 
         // Inicializar la aplicación
         document.addEventListener('DOMContentLoaded', function() {
@@ -559,17 +579,12 @@
             // Configurar event listeners
             document.getElementById('registrationForm').addEventListener('submit', handleRegistration);
             document.getElementById('updateLocationBtn').addEventListener('click', updateClientLocation);
-            document.getElementById('calculatePriceBtn').addEventListener('click', calculatePrice);
             document.getElementById('requestRideBtn').addEventListener('click', requestRide);
             document.getElementById('cancelRideBtn').addEventListener('click', cancelRideRequest);
             document.getElementById('contactDriverBtn').addEventListener('click', contactDriver);
             document.getElementById('cancelActiveRideBtn').addEventListener('click', cancelActiveRide);
             document.getElementById('newRideBtn').addEventListener('click', showNewRide);
-            
-            // Event listener para el input de destino
-            document.getElementById('destinationInput').addEventListener('input', function() {
-                document.getElementById('requestRideBtn').disabled = !this.value.trim();
-            });
+            document.getElementById('clearDestinationBtn').addEventListener('click', clearDestination);
         }
 
         async function handleRegistration(e) {
@@ -682,29 +697,10 @@
                 attribution: '© OpenStreetMap contributors'
             }).addTo(clientMap);
             
-            // Agregar control de geocodificación
-            L.Control.geocoder({
-                defaultMarkGeocode: false
-            })
-            .on('markgeocode', function(e) {
-                if (e.geocode) {
-                    const latlng = e.geocode.center;
-                    const address = e.geocode.name;
-                    
-                    // Si es la primera vez, establecer como destino
-                    if (!destinationLatLng) {
-                        destinationLatLng = latlng;
-                        destinationAddress = address;
-                        document.getElementById('destinationInput').value = address;
-                        
-                        // Calcular ruta si ya tenemos origen
-                        if (originLatLng) {
-                            calculateRoute();
-                        }
-                    }
-                }
-            })
-            .addTo(clientMap);
+            // Configurar evento de clic en el mapa
+            clientMap.on('click', async function(e) {
+                await handleMapClick(e.latlng.lat, e.latlng.lng);
+            });
             
             // Obtener ubicación actual
             if (navigator.geolocation) {
@@ -724,10 +720,31 @@
                         document.getElementById('originInput').value = originAddress || 'Ubicación actual';
                         
                         // Agregar marcador de ubicación actual
-                        clientMarker = L.marker([lat, lng])
-                            .addTo(clientMap)
-                            .bindPopup('Tu ubicación actual')
-                            .openPopup();
+                        clientMarker = L.marker([lat, lng], {
+                            icon: L.divIcon({
+                                className: 'custom-marker',
+                                html: '<div style="background-color: #2196f3; color: white; padding: 10px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.3);">📍</div>'
+                            })
+                        })
+                        .addTo(clientMap)
+                        .bindPopup('Tu ubicación actual<br><small>Puedes arrastrar este marcador si necesitas ajustar tu ubicación</small>')
+                        .openPopup();
+                        
+                        // Hacer el marcador arrastrable
+                        clientMarker.dragging.enable();
+                        
+                        // Actualizar cuando se mueva el marcador
+                        clientMarker.on('dragend', async function() {
+                            const newLatLng = clientMarker.getLatLng();
+                            originLatLng = newLatLng;
+                            originAddress = await getAddressFromCoords(newLatLng.lat, newLatLng.lng);
+                            document.getElementById('originInput').value = originAddress || 'Ubicación actual';
+                            
+                            // Recalcular ruta si hay destino
+                            if (destinationLatLng) {
+                                calculateRoute();
+                            }
+                        });
                             
                         // Actualizar ubicación en la base de datos
                         updateClientLocationInDB(lat, lng);
@@ -745,6 +762,66 @@
             }
         }
 
+        async function handleMapClick(lat, lng) {
+            // Limpiar marcador de destino anterior si existe
+            if (destinationMarker) {
+                clientMap.removeLayer(destinationMarker);
+            }
+            
+            destinationLatLng = L.latLng(lat, lng);
+            
+            // Obtener dirección del destino
+            destinationAddress = await getAddressFromCoords(lat, lng);
+            
+            // Agregar marcador de destino
+            destinationMarker = L.marker([lat, lng], {
+                icon: L.divIcon({
+                    className: 'custom-marker',
+                    html: '<div style="background-color: #f44336; color: white; padding: 10px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.3);">🏁</div>'
+                })
+            })
+            .addTo(clientMap)
+            .bindPopup('Destino seleccionado<br><small>Puedes arrastrar este marcador para ajustar el destino</small>')
+            .openPopup();
+            
+            // Hacer el marcador arrastrable
+            destinationMarker.dragging.enable();
+            
+            // Actualizar cuando se mueva el marcador
+            destinationMarker.on('dragend', async function() {
+                const newLatLng = destinationMarker.getLatLng();
+                destinationLatLng = newLatLng;
+                destinationAddress = await getAddressFromCoords(newLatLng.lat, newLatLng.lng);
+                updateDestinationInfo();
+                
+                // Recalcular ruta
+                if (originLatLng) {
+                    calculateRoute();
+                }
+            });
+            
+            // Actualizar información en la interfaz
+            updateDestinationInfo();
+            
+            // Calcular ruta si ya tenemos origen
+            if (originLatLng) {
+                calculateRoute();
+            }
+        }
+
+        function updateDestinationInfo() {
+            // Mostrar información del destino
+            const shortAddress = destinationAddress.length > 40 
+                ? destinationAddress.substring(0, 40) + '...' 
+                : destinationAddress;
+            
+            document.getElementById('destinationInput').value = destinationAddress;
+            document.getElementById('selectedDestinationText').textContent = shortAddress;
+            
+            // Habilitar botón de solicitud de viaje
+            document.getElementById('requestRideBtn').disabled = false;
+        }
+
         async function getAddressFromCoords(lat, lng) {
             try {
                 const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`);
@@ -757,25 +834,6 @@
             } catch (error) {
                 console.error('Error obteniendo dirección:', error);
                 return `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`;
-            }
-        }
-
-        async function getCoordsFromAddress(address) {
-            try {
-                const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`);
-                const data = await response.json();
-                
-                if (data.length > 0) {
-                    return {
-                        lat: parseFloat(data[0].lat),
-                        lng: parseFloat(data[0].lon),
-                        address: data[0].display_name
-                    };
-                }
-                return null;
-            } catch (error) {
-                console.error('Error geocodificando dirección:', error);
-                return null;
             }
         }
 
@@ -796,24 +854,10 @@
                 routeWhileDragging: false,
                 showAlternatives: false,
                 lineOptions: {
-                    styles: [{color: '#2e7d32', weight: 5}]
+                    styles: [{color: '#2e7d32', weight: 5, opacity: 0.7}]
                 },
                 createMarker: function(i, waypoint, n) {
-                    if (i === 0) {
-                        return L.marker(waypoint.latLng, {
-                            icon: L.divIcon({
-                                className: 'custom-marker',
-                                html: '<div style="background-color: #2e7d32; color: white; padding: 5px; border-radius: 50%;">📍</div>'
-                            })
-                        }).bindPopup('Punto de origen');
-                    } else {
-                        return L.marker(waypoint.latLng, {
-                            icon: L.divIcon({
-                                className: 'custom-marker',
-                                html: '<div style="background-color: #f44336; color: white; padding: 5px; border-radius: 50%;">🏁</div>'
-                            })
-                        }).bindPopup('Punto de destino');
-                    }
+                    return null; // No crear marcadores automáticos, ya tenemos los nuestros
                 }
             }).addTo(clientMap);
             
@@ -826,6 +870,10 @@
                     
                     // Mostrar estimación de precio
                     showPriceEstimate();
+                    
+                    // Ajustar el zoom para mostrar toda la ruta
+                    const bounds = L.latLngBounds([originLatLng, destinationLatLng]);
+                    clientMap.fitBounds(bounds.pad(0.1));
                 }
             });
         }
@@ -840,11 +888,11 @@
                 estimatedPriceSpan.textContent = price + ' Bs';
                 
                 if (estimatedDistance <= BASE_DISTANCE_KM) {
-                    priceDetailSpan.textContent = 'Tarifa base';
-                } else if (estimatedDistance > 20) {
-                    priceDetailSpan.textContent = 'Comunidad lejana';
+                    priceDetailSpan.textContent = `Hasta ${BASE_DISTANCE_KM}km: ${BASE_PRICE} Bs`;
                 } else {
-                    priceDetailSpan.textContent = `${estimatedDistance.toFixed(1)} km × ${PRICE_PER_KM} Bs/km`;
+                    const extraKm = estimatedDistance - BASE_DISTANCE_KM;
+                    const extraPrice = extraKm * PRICE_PER_KM;
+                    priceDetailSpan.textContent = `Base ${COMMUNITY_PRICE} Bs + ${extraKm.toFixed(1)}km × ${PRICE_PER_KM} Bs/km`;
                 }
                 
                 priceEstimateDiv.classList.remove('d-none');
@@ -854,36 +902,35 @@
         function calculatePriceFromDistance(distance) {
             if (distance <= BASE_DISTANCE_KM) {
                 return BASE_PRICE;
-            } else if (distance > 20) {
-                return COMMUNITY_PRICE;
             } else {
-                return BASE_PRICE + ((distance - BASE_DISTANCE_KM) * PRICE_PER_KM);
+                const extraKm = distance - BASE_DISTANCE_KM;
+                return COMMUNITY_PRICE + (extraKm * PRICE_PER_KM);
             }
         }
 
-        async function calculatePrice() {
-            const destinationInput = document.getElementById('destinationInput').value;
-            
-            if (!destinationInput.trim()) {
-                alert('Por favor, ingresa un destino');
-                return;
+        function clearDestination() {
+            // Limpiar marcador de destino
+            if (destinationMarker) {
+                clientMap.removeLayer(destinationMarker);
+                destinationMarker = null;
             }
             
-            // Obtener coordenadas del destino
-            const coords = await getCoordsFromAddress(destinationInput);
-            if (!coords) {
-                alert('No se pudo encontrar la dirección. Intenta con una más específica.');
-                return;
+            // Limpiar ruta
+            if (routingControl) {
+                clientMap.removeControl(routingControl);
+                routingControl = null;
             }
             
-            destinationLatLng = L.latLng(coords.lat, coords.lng);
-            destinationAddress = coords.address;
+            // Resetear variables
+            destinationLatLng = null;
+            destinationAddress = '';
+            estimatedDistance = 0;
             
-            // Calcular ruta
-            calculateRoute();
-            
-            // Habilitar botón de solicitar viaje
-            document.getElementById('requestRideBtn').disabled = false;
+            // Actualizar interfaz
+            document.getElementById('destinationInput').value = '';
+            document.getElementById('selectedDestinationText').textContent = 'Ninguno';
+            document.getElementById('priceEstimate').classList.add('d-none');
+            document.getElementById('requestRideBtn').disabled = true;
         }
 
         function startLocationTracking() {
@@ -893,13 +940,10 @@
                     const lat = position.coords.latitude;
                     const lng = position.coords.longitude;
                     
-                    // Actualizar marcador en el mapa
-                    if (clientMarker) {
+                    // Actualizar marcador en el mapa si no se está arrastrando
+                    if (clientMarker && !clientMarker.dragging._enabled) {
                         clientMarker.setLatLng([lat, lng]);
-                    } else {
-                        clientMarker = L.marker([lat, lng])
-                            .addTo(clientMap)
-                            .bindPopup('Tu ubicación actual');
+                        originLatLng = L.latLng(lat, lng);
                     }
                     
                     // Actualizar ubicación en la base de datos
@@ -991,12 +1035,12 @@
 
         async function requestRide() {
             if (!destinationLatLng || estimatedDistance === 0) {
-                alert('Por favor, calcula el precio primero');
+                alert('Por favor, selecciona un destino tocando en el mapa');
                 return;
             }
 
             try {
-                // Calcular precio final
+                // Calcular precio final según la nueva tarifa
                 const finalPrice = calculatePriceFromDistance(estimatedDistance);
                 
                 // Crear solicitud de viaje
@@ -1111,7 +1155,7 @@
             // Actualizar información del viaje
             document.getElementById('originAddress').textContent = currentRide.origen_direccion || 'Origen';
             document.getElementById('destinationAddress').textContent = currentRide.destino_direccion || 'Destino';
-            document.getElementById('ridePrice').textContent = currentRide.precio + ' Bs';
+            document.getElementById('ridePrice').textContent = currentRide.precio.toFixed(2) + ' Bs';
             document.getElementById('rideStatusBadge').textContent = 'Esperando conductor';
             
             // Iniciar actualización del progreso
@@ -1233,30 +1277,14 @@
                 rideCheckInterval = null;
             }
             
-            // Resetear campos del formulario
-            document.getElementById('destinationInput').value = '';
-            document.getElementById('priceEstimate').classList.add('d-none');
-            document.getElementById('requestRideBtn').disabled = true;
-            
-            // Limpiar ruta del mapa
-            if (routingControl) {
-                clientMap.removeControl(routingControl);
-                routingControl = null;
-            }
-            
-            // Resetear coordenadas de destino
-            destinationLatLng = null;
-            destinationAddress = '';
-            estimatedDistance = 0;
+            // Limpiar destino y ruta
+            clearDestination();
             
             // Mostrar pantalla principal
             document.getElementById('rideRequestSection').classList.add('d-none');
             document.getElementById('activeRideSection').classList.add('d-none');
             document.getElementById('requestRideSection').classList.remove('d-none');
             document.getElementById('newRideBtn').classList.add('d-none');
-            
-            // Obtener ubicación actualizada
-            updateClientLocation();
         }
 
         async function checkActiveRide() {
