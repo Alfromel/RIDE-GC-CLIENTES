@@ -52,100 +52,283 @@
             padding-bottom: 70px;
         }
         
-        .app-section {
+        /* Mapa */
+        #map {
+            height: 300px;
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #ddd;
             margin-bottom: 15px;
         }
         
-        .section-title {
-            font-size: 1.1rem;
+        /* Pantalla flotante de destino */
+        .destination-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: flex-end;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .destination-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .destination-card {
+            background: white;
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.15);
+        }
+        
+        .destination-overlay.active .destination-card {
+            transform: translateY(0);
+        }
+        
+        .destination-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary-light);
+        }
+        
+        .destination-title {
+            font-size: 1.2rem;
             font-weight: 600;
             color: var(--primary-dark);
-            margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid var(--primary-light);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
         
-        .app-card {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--gray);
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        
+        .close-btn:hover {
+            background: #f5f5f5;
+            color: var(--primary-color);
+        }
+        
+        /* Información de ubicación */
+        .location-info {
+            margin-bottom: 20px;
+        }
+        
+        .location-item {
+            display: flex;
+            gap: 15px;
             margin-bottom: 15px;
-            border: 1px solid #e9ecef;
-            overflow: hidden;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
         }
         
-        .card-header {
-            background: #f8f9fa;
-            padding: 12px 15px;
-            border-bottom: 1px solid #e9ecef;
-            font-weight: 600;
-            color: var(--dark-gray);
+        .location-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .location-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .icon-origin {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .icon-destination {
+            background: #fce4ec;
+            color: #c2185b;
+        }
+        
+        .location-details {
+            flex: 1;
+        }
+        
+        .location-label {
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+        
+        .location-address {
             font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-color);
+            line-height: 1.4;
         }
         
-        .card-body {
+        /* Información del viaje */
+        .trip-info {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-radius: 12px;
             padding: 15px;
+            margin: 20px 0;
+            border: 1px solid var(--primary-light);
         }
         
+        .trip-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--dark-gray);
+        }
+        
+        /* Precio */
+        .price-display {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 12px;
+            border: 2px solid var(--primary-color);
+            margin: 20px 0;
+        }
+        
+        .price-amount {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin: 0;
+        }
+        
+        .price-detail {
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+            margin: 5px 0 0 0;
+        }
+        
+        /* Botones */
         .btn-primary {
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
             border: none;
-            border-radius: 8px;
-            padding: 10px 15px;
-            font-weight: 500;
+            border-radius: 12px;
+            padding: 14px 20px;
+            font-weight: 600;
+            font-size: 1rem;
+            color: white;
+            width: 100%;
             transition: all 0.3s;
         }
         
         .btn-primary:hover {
             background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
-            transform: translateY(-1px);
-            box-shadow: 0 3px 10px rgba(46, 125, 50, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46, 125, 50, 0.4);
         }
         
-        .btn-outline {
+        .btn-secondary {
             background: white;
             border: 1px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 14px 20px;
+            font-weight: 600;
+            font-size: 1rem;
             color: var(--primary-color);
-            border-radius: 8px;
-            padding: 10px 15px;
-            font-weight: 500;
+            width: 100%;
             transition: all 0.3s;
         }
         
-        .btn-outline:hover {
+        .btn-secondary:hover {
             background: var(--primary-color);
             color: white;
         }
         
-        .form-control {
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            padding: 10px 12px;
-            font-size: 0.95rem;
-        }
-        
-        .form-control:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
-        }
-        
-        #map {
-            height: 250px;
+        /* Lista de conductores */
+        .drivers-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            border-radius: 8px;
-            border: 1px solid #ddd;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: flex-end;
+            z-index: 2001;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .drivers-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .drivers-card {
+            background: white;
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.15);
+        }
+        
+        .drivers-overlay.active .drivers-card {
+            transform: translateY(0);
         }
         
         .driver-card {
             background: white;
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 10px;
-            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border: 2px solid #e9ecef;
             transition: all 0.3s;
+            cursor: pointer;
         }
         
         .driver-card:hover {
@@ -158,9 +341,16 @@
             background: #f0f9f0;
         }
         
-        .user-avatar {
-            width: 36px;
-            height: 36px;
+        .driver-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .driver-avatar {
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             background: rgba(46, 125, 50, 0.15);
             display: flex;
@@ -168,57 +358,113 @@
             justify-content: center;
             font-weight: bold;
             color: var(--primary-color);
-            font-size: 0.9rem;
+            font-size: 1.2rem;
         }
         
-        .badge-status {
-            border-radius: 12px;
-            padding: 3px 8px;
-            font-size: 0.75rem;
+        .driver-info {
+            flex: 1;
+        }
+        
+        .driver-name {
             font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 3px;
+            color: var(--text-color);
         }
         
-        .badge-available {
-            background: var(--primary-color);
-            color: white;
+        .driver-meta {
+            font-size: 0.85rem;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
-        .badge-riding {
-            background: #ff9800;
-            color: white;
+        .driver-rating {
+            color: #ffc107;
+            display: flex;
+            align-items: center;
+            gap: 2px;
         }
         
-        .badge-distance {
+        .driver-distance {
             background: #e3f2fd;
             color: #1976d2;
+            padding: 3px 10px;
+            border-radius: 15px;
             font-weight: 600;
+            font-size: 0.85rem;
+            margin-left: auto;
         }
         
-        .ride-info-card {
-            background: white;
-            border-radius: 10px;
-            padding: 15px;
+        .driver-vehicle {
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-top: 8px;
+        }
+        
+        .no-drivers {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray);
+        }
+        
+        .no-drivers i {
+            font-size: 3rem;
             margin-bottom: 15px;
-            border: 1px solid #ff9800;
-            box-shadow: 0 2px 8px rgba(255, 152, 0, 0.1);
+            color: #ddd;
         }
         
-        .progress-container {
-            margin: 15px 0;
+        /* Estado de solicitud */
+        .request-status {
+            text-align: center;
+            padding: 30px 20px;
         }
         
-        .progress {
-            height: 6px;
-            border-radius: 3px;
-            background-color: #e9ecef;
+        .spinner-large {
+            width: 50px;
+            height: 50px;
+            border-width: 3px;
         }
         
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
-            border-radius: 3px;
+        /* Animaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        /* Instrucciones del mapa */
+        .map-instructions {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .map-instructions i {
+            color: var(--primary-color);
+            margin-right: 8px;
+        }
+        
+        /* Controles del mapa */
+        .map-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        /* Pantalla de registro */
         .registration-container {
             background: white;
             height: 100vh;
@@ -233,8 +479,10 @@
             font-weight: bold;
             font-size: 2.2rem;
             margin-bottom: 5px;
+            text-align: center;
         }
         
+        /* Botón flotante */
         .floating-action-btn {
             position: fixed;
             bottom: 15px;
@@ -259,223 +507,9 @@
             box-shadow: 0 5px 20px rgba(46, 125, 50, 0.6);
         }
         
-        .driver-details {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .driver-info {
-            flex-grow: 1;
-        }
-        
-        .driver-name {
-            font-weight: 600;
-            font-size: 0.95rem;
-            margin-bottom: 2px;
-            color: var(--text-color);
-        }
-        
-        .driver-meta {
-            font-size: 0.8rem;
-            color: var(--gray);
-        }
-        
-        .driver-rating {
-            color: #ffc107;
-            font-size: 0.8rem;
-            display: flex;
-            align-items: center;
-            gap: 2px;
-        }
-        
-        .distance-info {
-            text-align: right;
-        }
-        
-        .price-display {
-            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-            border-radius: 8px;
-            padding: 12px;
-            text-align: center;
-            border: 1px solid var(--primary-light);
-            margin: 10px 0;
-        }
-        
-        .price-amount {
-            color: var(--primary-dark);
-            font-weight: bold;
-            font-size: 1.4rem;
-            margin: 0;
-        }
-        
-        .price-detail {
-            color: var(--dark-gray);
-            font-size: 0.85rem;
-            margin: 5px 0 0 0;
-        }
-        
-        .instruction-box {
-            background: #fff8e1;
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 15px;
-            border: 1px solid #ffecb3;
-            font-size: 0.85rem;
-            color: #5d4037;
-        }
-        
-        .instruction-box i {
-            color: #ff9800;
-            margin-right: 5px;
-        }
-        
-        .location-display {
-            background: #f5f5f5;
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 10px;
-            font-size: 0.9rem;
-        }
-        
-        .location-label {
-            font-weight: 600;
-            color: var(--dark-gray);
-            font-size: 0.8rem;
-            margin-bottom: 3px;
-        }
-        
-        .location-value {
-            color: var(--text-color);
-        }
-        
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-        
-        .status-online {
-            background: #e8f5e9;
-            color: var(--primary-dark);
-        }
-        
-        .status-offline {
-            background: #f5f5f5;
-            color: #757575;
-        }
-        
-        .map-instruction {
-            position: absolute;
-            top: 60px;
-            left: 15px;
-            right: 15px;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            z-index: 400;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            border: 1px solid #ddd;
-        }
-        
-        .action-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        
-        .loading-spinner {
-            text-align: center;
-            padding: 20px;
-            color: var(--gray);
-        }
-        
-        .no-drivers {
-            text-align: center;
-            padding: 20px;
-            color: var(--gray);
-        }
-        
-        .no-drivers i {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            color: #ddd;
-        }
-        
-        .driver-list {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        
-        /* Scrollbar personalizado */
-        .driver-list::-webkit-scrollbar {
-            width: 5px;
-        }
-        
-        .driver-list::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 3px;
-        }
-        
-        .driver-list::-webkit-scrollbar-thumb {
-            background: #c1c1c1;
-            border-radius: 3px;
-        }
-        
-        .driver-list::-webkit-scrollbar-thumb:hover {
-            background: #a1a1a1;
-        }
-        
+        /* Ocultar controles de ruta */
         .leaflet-routing-container {
-            display: none; /* Ocultamos el panel de rutas para mantener limpio el mapa */
-        }
-        
-        /* Marcadores del mapa mejorados */
-        .origin-marker {
-            background-color: #2196f3 !important;
-            border: 2px solid white !important;
-        }
-        
-        .destination-marker {
-            background-color: #f44336 !important;
-            border: 2px solid white !important;
-        }
-        
-        /* Animaciones */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .fade-in {
-            animation: fadeIn 0.3s ease-out;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-        
-        /* Responsive */
-        @media (max-height: 700px) {
-            #map {
-                height: 200px;
-            }
-            
-            .driver-list {
-                max-height: 200px;
-            }
+            display: none !important;
         }
     </style>
 </head>
@@ -512,175 +546,34 @@
                         <h6 class="mb-0">GC Ride</h6>
                         <small id="clientNameDisplay" class="opacity-75" style="font-size: 0.8rem;"></small>
                     </div>
-                    <div class="user-avatar">
-                        <span id="userInitial">U</span>
+                    <div class="d-flex align-items-center gap-2">
+                        <small class="opacity-75">Cliente</small>
+                        <div class="bg-white rounded-circle d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;">
+                            <span id="userInitial" class="text-primary fw-bold" style="font-size: 0.9rem;">U</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Contenido principal -->
             <div class="app-content">
-                <!-- Instrucciones del mapa -->
-                <div id="mapInstructions" class="map-instruction fade-in">
+                <!-- Instrucciones -->
+                <div class="map-instructions fade-in">
                     <i class="bi bi-info-circle"></i>
-                    <span>Selecciona tu destino tocando el mapa</span>
+                    <span>Selecciona tu destino tocando cualquier lugar en el mapa</span>
                 </div>
 
-                <!-- Paso 1: Selección de destino -->
-                <div id="step1" class="app-section">
-                    <div class="section-title">
-                        <i class="bi bi-geo-alt"></i>
-                        <span>Tu Viaje</span>
-                    </div>
-                    
-                    <!-- Información de ubicación -->
-                    <div class="location-display">
-                        <div class="location-label">Origen:</div>
-                        <div class="location-value" id="originAddress">Cargando ubicación...</div>
-                    </div>
-                    
-                    <div class="location-display">
-                        <div class="location-label">Destino:</div>
-                        <div class="location-value" id="destinationAddress">Selecciona en el mapa</div>
-                    </div>
-                    
-                    <!-- Mapa -->
-                    <div class="card">
-                        <div class="card-header">Selecciona destino en el mapa</div>
-                        <div class="card-body p-0">
-                            <div id="map"></div>
-                        </div>
-                    </div>
-                    
-                    <!-- Controles del mapa -->
-                    <div class="action-buttons">
-                        <button id="updateLocationBtn" class="btn btn-outline">
-                            <i class="bi bi-arrow-clockwise me-1"></i> Actualizar
-                        </button>
-                        <button id="clearDestinationBtn" class="btn btn-outline">
-                            <i class="bi bi-x-circle me-1"></i> Limpiar
-                        </button>
-                    </div>
-                    
-                    <!-- Precio estimado -->
-                    <div id="priceEstimate" class="price-display d-none fade-in">
-                        <p class="price-amount" id="estimatedPrice">0 Bs</p>
-                        <p class="price-detail" id="priceDetail">Precio estimado</p>
-                    </div>
-                </div>
-
-                <!-- Paso 2: Conductores disponibles -->
-                <div id="step2" class="app-section d-none">
-                    <div class="section-title">
-                        <i class="bi bi-car-front"></i>
-                        <span>Conductores Disponibles</span>
-                        <span id="driversCount" class="badge bg-secondary ms-2" style="font-size: 0.7rem;">0</span>
-                    </div>
-                    
-                    <div id="loadingDrivers" class="loading-spinner">
-                        <div class="spinner-border spinner-border-sm text-primary" role="status">
-                            <span class="visually-hidden">Cargando...</span>
-                        </div>
-                        <p class="mt-2 mb-0">Buscando conductores cerca de ti...</p>
-                    </div>
-                    
-                    <div id="driversContainer" class="d-none">
-                        <div class="driver-list" id="driversList">
-                            <!-- Los conductores aparecerán aquí -->
-                        </div>
-                        
-                        <div id="noDrivers" class="no-drivers d-none">
-                            <i class="bi bi-car-front"></i>
-                            <p>No hay conductores disponibles</p>
-                            <small class="text-muted">Intenta nuevamente en unos momentos</small>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Paso 3: Solicitud en proceso -->
-                <div id="step3" class="app-section d-none">
-                    <div class="section-title">
-                        <i class="bi bi-hourglass-split"></i>
-                        <span>Solicitando Viaje</span>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <div class="spinner-border text-primary mb-3" role="status">
-                                <span class="visually-hidden">Cargando...</span>
-                            </div>
-                            <h6 class="mb-2">Esperando conductor...</h6>
-                            <p class="text-muted mb-3" style="font-size: 0.9rem;">Hemos enviado tu solicitud</p>
-                            
-                            <div class="price-display mb-3">
-                                <p class="price-amount" id="requestPrice">0 Bs</p>
-                                <p class="price-detail">Precio del viaje</p>
-                            </div>
-                            
-                            <button id="cancelRideBtn" class="btn btn-outline w-100">
-                                <i class="bi bi-x-circle me-2"></i> Cancelar Solicitud
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Paso 4: Viaje activo -->
-                <div id="step4" class="app-section d-none">
-                    <div class="section-title">
-                        <i class="bi bi-car-front-fill"></i>
-                        <span>Viaje en Curso</span>
-                    </div>
-                    
-                    <div class="ride-info-card">
-                        <!-- Información del conductor -->
-                        <div class="driver-details mb-3">
-                            <div class="user-avatar me-2">
-                                <span id="driverInitial">D</span>
-                            </div>
-                            <div class="driver-info">
-                                <div class="driver-name" id="driverName">Conductor asignado</div>
-                                <div class="driver-meta" id="vehicleInfo">Esperando información...</div>
-                                <div class="driver-rating">
-                                    <i class="bi bi-star-fill"></i>
-                                    <span>4.8</span>
-                                </div>
-                            </div>
-                            <div>
-                                <span id="rideStatusBadge" class="status-badge status-online">
-                                    <i class="bi bi-clock"></i>
-                                    <span>En camino</span>
-                                </span>
-                            </div>
-                        </div>
-                        
-                        <!-- Progreso del viaje -->
-                        <div class="progress-container">
-                            <div class="d-flex justify-content-between mb-1">
-                                <small id="originAddressShort">Recogida</small>
-                                <small id="etaText">5 min</small>
-                            </div>
-                            <div class="progress">
-                                <div id="rideProgress" class="progress-bar" style="width: 30%"></div>
-                            </div>
-                            <small id="destinationAddressShort" class="text-muted mt-1">Destino</small>
-                        </div>
-                        
-                        <!-- Precio -->
-                        <div class="price-display mb-3">
-                            <p class="price-amount" id="ridePrice">0 Bs</p>
-                            <p class="price-detail">Total a pagar</p>
-                        </div>
-                        
-                        <!-- Acciones -->
-                        <div class="action-buttons">
-                            <button id="contactDriverBtn" class="btn btn-outline">
-                                <i class="bi bi-telephone me-1"></i> Llamar
-                            </button>
-                            <button id="cancelActiveRideBtn" class="btn btn-outline">
-                                <i class="bi bi-x-circle me-1"></i> Cancelar
-                            </button>
-                        </div>
-                    </div>
+                <!-- Mapa -->
+                <div id="map"></div>
+                
+                <!-- Controles del mapa -->
+                <div class="map-controls">
+                    <button id="updateLocationBtn" class="btn btn-secondary">
+                        <i class="bi bi-arrow-clockwise me-1"></i> Actualizar ubicación
+                    </button>
+                    <button id="clearMapBtn" class="btn btn-secondary">
+                        <i class="bi bi-x-circle me-1"></i> Limpiar mapa
+                    </button>
                 </div>
             </div>
 
@@ -688,6 +581,141 @@
             <button id="newRideBtn" class="floating-action-btn d-none">
                 <i class="bi bi-plus"></i>
             </button>
+        </div>
+
+        <!-- Pantalla Flotante - Confirmación de Destino -->
+        <div id="destinationOverlay" class="destination-overlay">
+            <div class="destination-card">
+                <div class="destination-header">
+                    <div class="destination-title">
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        <span>Destino seleccionado</span>
+                    </div>
+                    <button class="close-btn" id="closeDestinationBtn">
+                        <i class="bi bi-x"></i>
+                    </button>
+                </div>
+                
+                <!-- Información de ubicación -->
+                <div class="location-info">
+                    <div class="location-item">
+                        <div class="location-icon icon-origin">
+                            <i class="bi bi-geo-alt"></i>
+                        </div>
+                        <div class="location-details">
+                            <div class="location-label">Origen</div>
+                            <div class="location-address" id="originAddressFull">Cargando...</div>
+                        </div>
+                    </div>
+                    
+                    <div class="location-item">
+                        <div class="location-icon icon-destination">
+                            <i class="bi bi-geo-alt-fill"></i>
+                        </div>
+                        <div class="location-details">
+                            <div class="location-label">Destino</div>
+                            <div class="location-address" id="destinationAddressFull">Cargando...</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Información del viaje -->
+                <div class="trip-info">
+                    <div class="trip-stats">
+                        <div class="stat-item">
+                            <div class="stat-value" id="tripDistance">0 km</div>
+                            <div class="stat-label">Distancia</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="tripTime">0 min</div>
+                            <div class="stat-label">Tiempo estimado</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Precio -->
+                <div class="price-display">
+                    <div class="price-amount" id="tripPrice">0 Bs</div>
+                    <div class="price-detail" id="priceDetails">Precio estimado</div>
+                </div>
+                
+                <!-- Botón para continuar -->
+                <button id="confirmDestinationBtn" class="btn btn-primary mb-3">
+                    <i class="bi bi-car-front me-2"></i> Buscar Conductores
+                </button>
+                
+                <button id="editDestinationBtn" class="btn btn-secondary">
+                    <i class="bi bi-pencil me-2"></i> Cambiar Destino
+                </button>
+            </div>
+        </div>
+
+        <!-- Pantalla Flotante - Conductores Disponibles -->
+        <div id="driversOverlay" class="drivers-overlay">
+            <div class="drivers-card">
+                <div class="destination-header">
+                    <div class="destination-title">
+                        <i class="bi bi-car-front-fill text-primary"></i>
+                        <span>Conductores Disponibles</span>
+                        <span id="driversCount" class="badge bg-primary ms-2">0</span>
+                    </div>
+                    <button class="close-btn" id="closeDriversBtn">
+                        <i class="bi bi-x"></i>
+                    </button>
+                </div>
+                
+                <!-- Loading -->
+                <div id="loadingDrivers" class="text-center py-4">
+                    <div class="spinner-border text-primary mb-3" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                    <p class="text-muted mb-0">Buscando conductores cerca de ti...</p>
+                </div>
+                
+                <!-- Lista de conductores -->
+                <div id="driversList" class="d-none">
+                    <!-- Los conductores se cargarán aquí -->
+                </div>
+                
+                <!-- Sin conductores -->
+                <div id="noDriversMessage" class="no-drivers d-none">
+                    <i class="bi bi-car-front"></i>
+                    <h6 class="mt-3">No hay conductores disponibles</h6>
+                    <p class="text-muted">Intenta nuevamente en unos momentos</p>
+                    <button id="retryDriversBtn" class="btn btn-secondary mt-3">
+                        <i class="bi bi-arrow-clockwise me-2"></i> Intentar nuevamente
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pantalla Flotante - Solicitud Enviada -->
+        <div id="requestOverlay" class="drivers-overlay">
+            <div class="drivers-card">
+                <div class="destination-header">
+                    <div class="destination-title">
+                        <i class="bi bi-hourglass-split text-warning"></i>
+                        <span>Solicitando Viaje</span>
+                    </div>
+                </div>
+                
+                <div class="request-status">
+                    <div class="spinner-border spinner-large text-primary mb-4" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                    <h5 class="mb-2">Esperando respuesta del conductor...</h5>
+                    <p class="text-muted mb-4">Hemos enviado tu solicitud a los conductores disponibles</p>
+                    
+                    <div class="price-display mb-4">
+                        <div class="price-amount" id="requestPrice">0 Bs</div>
+                        <div class="price-detail">Precio del viaje</div>
+                    </div>
+                    
+                    <button id="cancelRequestBtn" class="btn btn-secondary">
+                        <i class="bi bi-x-circle me-2"></i> Cancelar Solicitud
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -717,8 +745,9 @@
         let originAddress = '';
         let destinationAddress = '';
         let estimatedDistance = 0;
+        let estimatedTime = 0;
         let selectedDriverId = null;
-        let driversCheckInterval = null;
+        let currentRequestData = null;
 
         // Constantes de precios
         const BASE_PRICE = 13; // Bs para hasta 3km
@@ -742,11 +771,14 @@
             // Configurar event listeners
             document.getElementById('registrationForm').addEventListener('submit', handleRegistration);
             document.getElementById('updateLocationBtn').addEventListener('click', updateClientLocation);
-            document.getElementById('clearDestinationBtn').addEventListener('click', clearDestination);
-            document.getElementById('cancelRideBtn').addEventListener('click', cancelRideRequest);
-            document.getElementById('contactDriverBtn').addEventListener('click', contactDriver);
-            document.getElementById('cancelActiveRideBtn').addEventListener('click', cancelActiveRide);
-            document.getElementById('newRideBtn').addEventListener('click', showNewRide);
+            document.getElementById('clearMapBtn').addEventListener('click', clearMap);
+            document.getElementById('closeDestinationBtn').addEventListener('click', closeDestinationOverlay);
+            document.getElementById('editDestinationBtn').addEventListener('click', editDestination);
+            document.getElementById('confirmDestinationBtn').addEventListener('click', showDriversOverlay);
+            document.getElementById('closeDriversBtn').addEventListener('click', closeDriversOverlay);
+            document.getElementById('retryDriversBtn').addEventListener('click', loadAvailableDrivers);
+            document.getElementById('cancelRequestBtn').addEventListener('click', cancelRideRequest);
+            document.getElementById('newRideBtn').addEventListener('click', resetToMainScreen);
         }
 
         async function handleRegistration(e) {
@@ -879,9 +911,6 @@
                         // Centrar mapa en la ubicación actual
                         clientMap.setView([lat, lng], 15);
                         
-                        // Actualizar dirección de origen
-                        updateOriginAddress();
-                        
                         // Agregar marcador de ubicación actual
                         clientMarker = L.marker([lat, lng], {
                             icon: L.icon({
@@ -894,7 +923,7 @@
                             title: 'Tu ubicación actual'
                         })
                         .addTo(clientMap)
-                        .bindPopup('<b>Tu ubicación actual</b><br>Puedes arrastrar este marcador si necesitas ajustar tu ubicación')
+                        .bindPopup('<b>Tu ubicación actual</b><br>Arrastra para ajustar')
                         .openPopup();
                         
                         // Hacer el marcador arrastrable
@@ -905,12 +934,6 @@
                             const newLatLng = clientMarker.getLatLng();
                             originLatLng = newLatLng;
                             originAddress = await getAddressFromCoords(newLatLng.lat, newLatLng.lng);
-                            updateOriginAddress();
-                            
-                            // Recalcular ruta si hay destino
-                            if (destinationLatLng) {
-                                calculateRoute();
-                            }
                         });
                             
                         // Actualizar ubicación en la base de datos
@@ -927,13 +950,6 @@
             } else {
                 alert('Tu navegador no soporta geolocalización.');
             }
-        }
-
-        function updateOriginAddress() {
-            const shortAddress = originAddress.length > 40 
-                ? originAddress.substring(0, 40) + '...' 
-                : originAddress;
-            document.getElementById('originAddress').textContent = shortAddress;
         }
 
         async function handleMapClick(lat, lng) {
@@ -959,7 +975,7 @@
                 title: 'Destino seleccionado'
             })
             .addTo(clientMap)
-            .bindPopup('<b>Destino seleccionado</b><br>Puedes arrastrar este marcador para ajustar el destino')
+            .bindPopup('<b>Destino seleccionado</b><br>Arrastra para ajustar')
             .openPopup();
             
             // Hacer el marcador arrastrable
@@ -970,33 +986,14 @@
                 const newLatLng = destinationMarker.getLatLng();
                 destinationLatLng = newLatLng;
                 destinationAddress = await getAddressFromCoords(newLatLng.lat, newLatLng.lng);
-                updateDestinationAddress();
-                
-                // Recalcular ruta
-                if (originLatLng) {
-                    calculateRoute();
-                }
+                calculateRoute();
             });
             
-            // Actualizar información en la interfaz
-            updateDestinationAddress();
+            // Calcular ruta
+            calculateRoute();
             
-            // Calcular ruta si ya tenemos origen
-            if (originLatLng) {
-                calculateRoute();
-            }
-            
-            // Mostrar conductores disponibles
-            showStep2();
-            loadAvailableDrivers();
-        }
-
-        function updateDestinationAddress() {
-            const shortAddress = destinationAddress.length > 40 
-                ? destinationAddress.substring(0, 40) + '...' 
-                : destinationAddress;
-            document.getElementById('destinationAddress').textContent = shortAddress;
-            document.getElementById('destinationAddressShort').textContent = shortAddress;
+            // Mostrar pantalla flotante de destino
+            showDestinationOverlay();
         }
 
         async function getAddressFromCoords(lat, lng) {
@@ -1027,7 +1024,7 @@
                 clientMap.removeControl(routingControl);
             }
             
-            // Crear nueva ruta (solo línea, sin controles visibles)
+            // Crear nueva ruta
             routingControl = L.Routing.control({
                 waypoints: [originLatLng, destinationLatLng],
                 routeWhileDragging: false,
@@ -1035,24 +1032,28 @@
                 addWaypoints: false,
                 draggableWaypoints: false,
                 fitSelectedRoutes: false,
-                show: false, // Ocultar controles
+                show: false,
                 lineOptions: {
                     styles: [{color: '#2e7d32', weight: 4, opacity: 0.7}]
                 },
-                createMarker: function() { return null; } // No crear marcadores automáticos
+                createMarker: function() { return null; }
             }).addTo(clientMap);
             
             // Ocultar el contenedor de rutas
-            document.querySelector('.leaflet-routing-container')?.style.setProperty('display', 'none', 'important');
+            setTimeout(() => {
+                document.querySelector('.leaflet-routing-container')?.style.setProperty('display', 'none', 'important');
+            }, 100);
             
-            // Obtener distancia de la ruta
+            // Obtener información de la ruta
             routingControl.on('routesfound', function(e) {
                 const routes = e.routes;
                 if (routes.length > 0) {
-                    estimatedDistance = routes[0].summary.totalDistance / 1000; // Convertir a km
+                    const route = routes[0];
+                    estimatedDistance = route.summary.totalDistance / 1000; // Convertir a km
+                    estimatedTime = Math.round(route.summary.totalTime / 60); // Convertir a minutos
                     
-                    // Mostrar estimación de precio
-                    showPriceEstimate();
+                    // Actualizar información en la pantalla flotante
+                    updateDestinationOverlay();
                     
                     // Ajustar el zoom para mostrar toda la ruta
                     const bounds = L.latLngBounds([originLatLng, destinationLatLng]);
@@ -1061,26 +1062,80 @@
             });
         }
 
-        function showPriceEstimate() {
-            const priceEstimateDiv = document.getElementById('priceEstimate');
-            const estimatedPriceSpan = document.getElementById('estimatedPrice');
-            const priceDetailSpan = document.getElementById('priceDetail');
+        function showDestinationOverlay() {
+            document.getElementById('originAddressFull').textContent = originAddress || 'Ubicación actual';
+            document.getElementById('destinationAddressFull').textContent = destinationAddress || 'Destino seleccionado';
             
+            // Calcular precio estimado
             if (estimatedDistance > 0) {
                 const price = calculatePriceFromDistance(estimatedDistance);
-                estimatedPriceSpan.textContent = price.toFixed(2) + ' Bs';
+                const priceDetail = estimatedDistance <= BASE_DISTANCE_KM 
+                    ? `Hasta ${BASE_DISTANCE_KM}km` 
+                    : `${(estimatedDistance - BASE_DISTANCE_KM).toFixed(1)}km adicionales`;
                 
-                if (estimatedDistance <= BASE_DISTANCE_KM) {
-                    priceDetailSpan.textContent = `Hasta ${BASE_DISTANCE_KM}km`;
-                } else {
-                    const extraKm = estimatedDistance - BASE_DISTANCE_KM;
-                    priceDetailSpan.textContent = `${extraKm.toFixed(1)}km adicionales`;
-                }
+                document.getElementById('tripDistance').textContent = estimatedDistance.toFixed(1) + ' km';
+                document.getElementById('tripTime').textContent = estimatedTime + ' min';
+                document.getElementById('tripPrice').textContent = price.toFixed(2) + ' Bs';
+                document.getElementById('priceDetails').textContent = priceDetail;
+            }
+            
+            // Mostrar overlay
+            document.getElementById('destinationOverlay').classList.add('active');
+        }
+
+        function closeDestinationOverlay() {
+            document.getElementById('destinationOverlay').classList.remove('active');
+        }
+
+        function editDestination() {
+            closeDestinationOverlay();
+            // Mantener el marcador en el mapa para que el usuario pueda ajustarlo
+            if (destinationMarker) {
+                destinationMarker.openPopup();
+            }
+        }
+
+        function showDriversOverlay() {
+            // Cerrar overlay de destino
+            closeDestinationOverlay();
+            
+            // Guardar datos del viaje para la solicitud
+            currentRequestData = {
+                origen_lat: originLatLng.lat,
+                origen_lng: originLatLng.lng,
+                destino_lat: destinationLatLng.lat,
+                destino_lng: destinationLatLng.lng,
+                origen_direccion: originAddress,
+                destino_direccion: destinationAddress,
+                distancia: estimatedDistance,
+                precio: calculatePriceFromDistance(estimatedDistance),
+                tiempo: estimatedTime
+            };
+            
+            // Mostrar overlay de conductores
+            document.getElementById('driversOverlay').classList.add('active');
+            
+            // Cargar conductores disponibles
+            loadAvailableDrivers();
+        }
+
+        function closeDriversOverlay() {
+            document.getElementById('driversOverlay').classList.remove('active');
+        }
+
+        function updateDestinationOverlay() {
+            if (estimatedDistance > 0) {
+                const price = calculatePriceFromDistance(estimatedDistance);
+                const priceDetail = estimatedDistance <= BASE_DISTANCE_KM 
+                    ? `Hasta ${BASE_DISTANCE_KM}km` 
+                    : `${(estimatedDistance - BASE_DISTANCE_KM).toFixed(1)}km adicionales`;
                 
-                priceEstimateDiv.classList.remove('d-none');
-                priceEstimateDiv.classList.add('fade-in');
+                document.getElementById('tripDistance').textContent = estimatedDistance.toFixed(1) + ' km';
+                document.getElementById('tripTime').textContent = estimatedTime + ' min';
+                document.getElementById('tripPrice').textContent = price.toFixed(2) + ' Bs';
+                document.getElementById('priceDetails').textContent = priceDetail;
                 
-                // También actualizar en el paso 3
+                // También actualizar precio en la solicitud
                 document.getElementById('requestPrice').textContent = price.toFixed(2) + ' Bs';
             }
         }
@@ -1094,7 +1149,7 @@
             }
         }
 
-        function clearDestination() {
+        function clearMap() {
             // Limpiar marcador de destino
             if (destinationMarker) {
                 clientMap.removeLayer(destinationMarker);
@@ -1111,46 +1166,307 @@
             destinationLatLng = null;
             destinationAddress = '';
             estimatedDistance = 0;
+            estimatedTime = 0;
             
-            // Actualizar interfaz
-            document.getElementById('destinationAddress').textContent = 'Selecciona en el mapa';
-            document.getElementById('destinationAddressShort').textContent = 'Destino';
-            document.getElementById('priceEstimate').classList.add('d-none');
+            // Cerrar overlays si están abiertos
+            closeDestinationOverlay();
+            closeDriversOverlay();
             
-            // Ocultar paso 2
-            showStep1();
+            // Centrar mapa en la ubicación actual
+            if (originLatLng) {
+                clientMap.setView([originLatLng.lat, originLatLng.lng], 15);
+            }
         }
 
-        function showStep1() {
-            document.getElementById('step1').classList.remove('d-none');
-            document.getElementById('step2').classList.add('d-none');
-            document.getElementById('step3').classList.add('d-none');
-            document.getElementById('step4').classList.add('d-none');
+        async function loadAvailableDrivers() {
+            if (!originLatLng || !destinationLatLng) {
+                alert('Primero selecciona un destino en el mapa');
+                return;
+            }
+            
+            const loadingDiv = document.getElementById('loadingDrivers');
+            const driversList = document.getElementById('driversList');
+            const noDriversDiv = document.getElementById('noDriversMessage');
+            
+            try {
+                // Mostrar loading
+                loadingDiv.classList.remove('d-none');
+                driversList.classList.add('d-none');
+                noDriversDiv.classList.add('d-none');
+                
+                // Buscar conductores en línea y disponibles (NO EN VIAJE)
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/drivers?en_linea=eq.true&disponible=eq.true&select=*`,
+                    {
+                        headers: {
+                            'apikey': SUPABASE_KEY,
+                            'Authorization': `Bearer ${SUPABASE_KEY}`
+                        }
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error('Error al cargar conductores');
+                }
+
+                const drivers = await response.json();
+                
+                // Ocultar loading
+                loadingDiv.classList.add('d-none');
+                
+                if (drivers.length > 0) {
+                    // Ordenar conductores por distancia
+                    drivers.sort((a, b) => {
+                        const distA = calculateDistance(originLatLng.lat, originLatLng.lng, a.latitud, a.longitud);
+                        const distB = calculateDistance(originLatLng.lat, originLatLng.lng, b.latitud, b.longitud);
+                        return distA - distB;
+                    });
+                    
+                    // Mostrar lista de conductores
+                    displayDrivers(drivers);
+                    driversList.classList.remove('d-none');
+                    noDriversDiv.classList.add('d-none');
+                    
+                    // Actualizar contador
+                    document.getElementById('driversCount').textContent = drivers.length;
+                } else {
+                    driversList.classList.add('d-none');
+                    noDriversDiv.classList.remove('d-none');
+                    document.getElementById('driversCount').textContent = '0';
+                }
+                
+            } catch (error) {
+                console.error('Error al cargar conductores:', error);
+                loadingDiv.classList.add('d-none');
+                driversList.classList.add('d-none');
+                noDriversDiv.classList.remove('d-none');
+            }
         }
 
-        function showStep2() {
-            document.getElementById('step1').classList.add('d-none');
-            document.getElementById('step2').classList.remove('d-none');
-            document.getElementById('step3').classList.add('d-none');
-            document.getElementById('step4').classList.add('d-none');
-            document.getElementById('mapInstructions').classList.add('d-none');
+        function displayDrivers(drivers) {
+            const driversList = document.getElementById('driversList');
+            
+            driversList.innerHTML = drivers.map((driver, index) => {
+                // Calcular distancia al conductor
+                const distance = calculateDistance(
+                    originLatLng.lat, originLatLng.lng,
+                    driver.latitud, driver.longitud
+                );
+                
+                // Generar rating aleatorio
+                const rating = (Math.random() * 2 + 3).toFixed(1);
+                
+                return `
+                <div class="driver-card" onclick="selectDriver(${driver.id}, '${driver.nombre}', ${distance.toFixed(1)})">
+                    <div class="driver-header">
+                        <div class="driver-avatar">
+                            <span>${driver.nombre.charAt(0).toUpperCase()}</span>
+                        </div>
+                        <div class="driver-info">
+                            <div class="driver-name">${driver.nombre}</div>
+                            <div class="driver-meta">
+                                <span class="driver-rating">
+                                    <i class="bi bi-star-fill"></i>
+                                    <span>${rating}</span>
+                                </span>
+                                <span>• ${driver.asientos || 4} asientos</span>
+                            </div>
+                        </div>
+                        <div class="driver-distance">${distance.toFixed(1)} km</div>
+                    </div>
+                    <div class="driver-vehicle">
+                        <i class="bi bi-car-front me-2"></i>
+                        ${driver.tipo_vehiculo || 'TAXI'} - ${driver.modelo_vehiculo || 'No especificado'} 
+                        ${driver.placa_vehiculo ? `(${driver.placa_vehiculo})` : ''}
+                    </div>
+                    ${index === 0 ? '<div class="text-center mt-2"><small class="text-success"><i class="bi bi-check-circle me-1"></i> Más cercano</small></div>' : ''}
+                </div>
+                `;
+            }).join('');
         }
 
-        function showStep3() {
-            document.getElementById('step1').classList.add('d-none');
-            document.getElementById('step2').classList.add('d-none');
-            document.getElementById('step3').classList.remove('d-none');
-            document.getElementById('step4').classList.add('d-none');
-            document.getElementById('mapInstructions').classList.add('d-none');
+        function selectDriver(driverId, driverName, distance) {
+            selectedDriverId = driverId;
+            
+            // Mostrar confirmación
+            if (confirm(`¿Solicitar viaje con ${driverName} a ${distance} km de distancia?`)) {
+                sendRideRequest();
+            }
         }
 
-        function showStep4() {
-            document.getElementById('step1').classList.add('d-none');
-            document.getElementById('step2').classList.add('d-none');
-            document.getElementById('step3').classList.add('d-none');
-            document.getElementById('step4').classList.remove('d-none');
-            document.getElementById('mapInstructions').classList.add('d-none');
+        async function sendRideRequest() {
+            if (!selectedDriverId || !currentRequestData) {
+                alert('Error: No se ha seleccionado un conductor o no hay datos del viaje');
+                return;
+            }
+
+            try {
+                // Cerrar overlay de conductores
+                closeDriversOverlay();
+                
+                // Mostrar overlay de solicitud
+                document.getElementById('requestOverlay').classList.add('active');
+                
+                // Crear solicitud de viaje con todos los datos necesarios
+                const rideData = {
+                    driver_id: selectedDriverId,
+                    client_id: currentClient.id,
+                    origen_lat: currentRequestData.origen_lat,
+                    origen_lng: currentRequestData.origen_lng,
+                    destino_lat: currentRequestData.destino_lat,
+                    destino_lng: currentRequestData.destino_lng,
+                    origen_direccion: currentRequestData.origen_direccion,
+                    destino_direccion: currentRequestData.destino_direccion,
+                    estado: 'solicitado',
+                    precio: currentRequestData.precio,
+                    distancia: currentRequestData.distancia,
+                    tiempo_estimado: currentRequestData.tiempo
+                };
+
+                console.log('Enviando solicitud:', rideData);
+
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/rides`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'Prefer': 'return=representation'
+                    },
+                    body: JSON.stringify(rideData)
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Error response:', errorText);
+                    throw new Error('Error al enviar solicitud de viaje: ' + response.status);
+                }
+
+                const newRide = await response.json();
+                currentRide = newRide[0];
+                
+                console.log('Solicitud creada exitosamente:', currentRide);
+                
+                // Iniciar verificación del estado del viaje
+                startRideCheck();
+                
+            } catch (error) {
+                console.error('Error al solicitar viaje:', error);
+                alert('Error al solicitar el viaje. Intente nuevamente.');
+                document.getElementById('requestOverlay').classList.remove('active');
+            }
+        }
+
+        function startRideCheck() {
+            // Verificar estado del viaje cada 3 segundos
+            rideCheckInterval = setInterval(async () => {
+                await checkRideStatus();
+            }, 3000);
+        }
+
+        async function checkRideStatus() {
+            if (!currentRide) return;
+            
+            try {
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/rides?id=eq.${currentRide.id}&select=*,drivers(nombre,tipo_vehiculo,modelo_vehiculo,placa_vehiculo)`,
+                    {
+                        headers: {
+                            'apikey': SUPABASE_KEY,
+                            'Authorization': `Bearer ${SUPABASE_KEY}`
+                        }
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error('Error al verificar estado del viaje');
+                }
+
+                const rides = await response.json();
+                
+                if (rides.length > 0) {
+                    const ride = rides[0];
+                    currentRide = ride;
+                    
+                    if (ride.estado === 'aceptado') {
+                        // Conductor aceptó el viaje
+                        showRideAccepted(ride);
+                    } else if (ride.estado === 'cancelado') {
+                        // Conductor canceló el viaje
+                        alert('El conductor canceló tu solicitud');
+                        resetToMainScreen();
+                    } else if (ride.estado === 'en_camino') {
+                        // Conductor está en camino
+                        showRideInProgress(ride);
+                    } else if (ride.estado === 'completado') {
+                        // Viaje completado
+                        showRideCompleted(ride);
+                    }
+                }
+                
+            } catch (error) {
+                console.error('Error al verificar estado del viaje:', error);
+            }
+        }
+
+        function showRideAccepted(ride) {
+            document.getElementById('requestOverlay').classList.remove('active');
+            alert(`¡Viaje aceptado!\nConductor: ${ride.drivers.nombre}\nVehículo: ${ride.drivers.tipo_vehiculo}\nPrecio: ${ride.precio} Bs`);
+            
+            // Aquí podrías mostrar otra pantalla de seguimiento
+            // Por ahora, simplemente reseteamos
+            resetToMainScreen();
+        }
+
+        function showRideInProgress(ride) {
+            document.getElementById('requestOverlay').classList.remove('active');
+            alert(`El conductor ${ride.drivers.nombre} está en camino.\nPrecio: ${ride.precio} Bs`);
+            
+            // Mostrar botón para nuevo viaje
             document.getElementById('newRideBtn').classList.remove('d-none');
+        }
+
+        function showRideCompleted(ride) {
+            document.getElementById('requestOverlay').classList.remove('active');
+            alert(`¡Viaje completado!\nGracias por usar GC Ride.\nPrecio: ${ride.precio} Bs`);
+            
+            resetToMainScreen();
+        }
+
+        async function cancelRideRequest() {
+            if (!currentRide) return;
+            
+            if (confirm('¿Estás seguro de que quieres cancelar la solicitud de viaje?')) {
+                try {
+                    // Actualizar estado del viaje a "cancelado"
+                    const response = await fetch(
+                        `${SUPABASE_URL}/rest/v1/rides?id=eq.${currentRide.id}`,
+                        {
+                            method: 'PATCH',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'apikey': SUPABASE_KEY,
+                                'Authorization': `Bearer ${SUPABASE_KEY}`,
+                                'Prefer': 'return=minimal'
+                            },
+                            body: JSON.stringify({
+                                estado: 'cancelado'
+                            })
+                        }
+                    );
+
+                    if (!response.ok) {
+                        throw new Error('Error al cancelar viaje');
+                    }
+                    
+                    resetToMainScreen();
+                    alert('Solicitud de viaje cancelada');
+                    
+                } catch (error) {
+                    console.error('Error al cancelar viaje:', error);
+                    alert('Error al cancelar el viaje. Intente nuevamente.');
+                }
+            }
         }
 
         function startLocationTracking() {
@@ -1232,34 +1548,16 @@
                             clientMarker.setLatLng([lat, lng]);
                         }
                         
-                        // Actualizar dirección de origen
-                        updateOriginAddress();
-                        
                         // Actualizar en base de datos
                         updateClientLocationInDB(lat, lng);
                         
                         // Recalcular ruta si hay destino
                         if (destinationLatLng) {
                             calculateRoute();
-                            loadAvailableDrivers();
                         }
                         
-                        // Mostrar mensaje de confirmación
-                        const alertDiv = document.createElement('div');
-                        alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed';
-                        alertDiv.style.cssText = 'top: 70px; left: 50%; transform: translateX(-50%); z-index: 1050; font-size: 0.85rem;';
-                        alertDiv.innerHTML = `
-                            <i class="bi bi-check-circle me-2"></i>
-                            Ubicación actualizada
-                            <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert"></button>
-                        `;
-                        document.body.appendChild(alertDiv);
-                        
-                        setTimeout(() => {
-                            if (alertDiv.parentNode) {
-                                alertDiv.remove();
-                            }
-                        }, 3000);
+                        // Mostrar mensaje
+                        showToast('Ubicación actualizada correctamente', 'success');
                     },
                     function(error) {
                         console.error('Error obteniendo ubicación:', error);
@@ -1269,372 +1567,38 @@
             }
         }
 
-        async function loadAvailableDrivers() {
-            if (!originLatLng || !destinationLatLng) return;
-            
-            const loadingDiv = document.getElementById('loadingDrivers');
-            const driversContainer = document.getElementById('driversContainer');
-            const driversList = document.getElementById('driversList');
-            const noDriversDiv = document.getElementById('noDrivers');
-            
-            try {
-                // Mostrar loading
-                loadingDiv.classList.remove('d-none');
-                driversContainer.classList.add('d-none');
-                noDriversDiv.classList.add('d-none');
-                
-                // Buscar conductores en línea y disponibles
-                const response = await fetch(
-                    `${SUPABASE_URL}/rest/v1/drivers?en_linea=eq.true&disponible=eq.true&select=*`,
-                    {
-                        headers: {
-                            'apikey': SUPABASE_KEY,
-                            'Authorization': `Bearer ${SUPABASE_KEY}`
-                        }
-                    }
-                );
-
-                if (!response.ok) {
-                    throw new Error('Error al cargar conductores');
-                }
-
-                const drivers = await response.json();
-                
-                // Ocultar loading
-                loadingDiv.classList.add('d-none');
-                
-                if (drivers.length > 0) {
-                    // Ordenar conductores por distancia
-                    drivers.sort((a, b) => {
-                        const distA = calculateDistance(originLatLng.lat, originLatLng.lng, a.latitud, a.longitud);
-                        const distB = calculateDistance(originLatLng.lat, originLatLng.lng, b.latitud, b.longitud);
-                        return distA - distB;
-                    });
-                    
-                    // Mostrar lista de conductores
-                    displayDrivers(drivers);
-                    driversContainer.classList.remove('d-none');
-                    noDriversDiv.classList.add('d-none');
-                    
-                    // Actualizar contador
-                    document.getElementById('driversCount').textContent = drivers.length;
-                } else {
-                    driversContainer.classList.add('d-none');
-                    noDriversDiv.classList.remove('d-none');
-                    document.getElementById('driversCount').textContent = '0';
-                }
-                
-            } catch (error) {
-                console.error('Error al cargar conductores:', error);
-                loadingDiv.classList.add('d-none');
-                driversContainer.classList.add('d-none');
-                noDriversDiv.classList.remove('d-none');
-            }
-        }
-
-        function displayDrivers(drivers) {
-            const driversList = document.getElementById('driversList');
-            
-            driversList.innerHTML = drivers.map((driver, index) => {
-                // Calcular distancia al conductor
-                const distance = calculateDistance(
-                    originLatLng.lat, originLatLng.lng,
-                    driver.latitud, driver.longitud
-                );
-                
-                // Generar rating aleatorio (en una app real vendría de la base de datos)
-                const rating = (Math.random() * 2 + 3).toFixed(1); // Entre 3.0 y 5.0
-                
-                return `
-                <div class="driver-card ${index === 0 ? 'selected' : ''}" onclick="selectDriver(${driver.id}, this)">
-                    <div class="driver-details">
-                        <div class="user-avatar">
-                            <span>${driver.nombre.charAt(0).toUpperCase()}</span>
-                        </div>
-                        <div class="driver-info">
-                            <div class="driver-name">${driver.nombre}</div>
-                            <div class="driver-meta">${driver.tipo_vehiculo || 'TAXI'} • ${driver.modelo_vehiculo || 'Sin modelo'}</div>
-                            <div class="driver-rating">
-                                <i class="bi bi-star-fill"></i>
-                                <span>${rating}</span>
-                                <span class="ms-2">• ${driver.asientos || 4} asientos</span>
-                            </div>
-                        </div>
-                        <div class="distance-info">
-                            <span class="badge-distance">${distance.toFixed(1)} km</span>
-                        </div>
+        function showToast(message, type = 'info') {
+            // Crear toast
+            const toast = document.createElement('div');
+            toast.className = `toast align-items-center text-white bg-${type} border-0 position-fixed`;
+            toast.style.cssText = 'top: 70px; right: 15px; z-index: 1100;';
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <i class="bi bi-check-circle me-2"></i>
+                        ${message}
                     </div>
-                    ${index === 0 ? '<div class="text-center mt-2"><small class="text-primary"><i class="bi bi-check-circle me-1"></i> Más cercano</small></div>' : ''}
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
                 </div>
-                `;
-            }).join('');
+            `;
             
-            // Seleccionar automáticamente el conductor más cercano (primero en la lista)
-            if (drivers.length > 0) {
-                selectedDriverId = drivers[0].id;
-            }
-        }
-
-        function selectDriver(driverId, element) {
-            // Remover selección anterior
-            document.querySelectorAll('.driver-card').forEach(card => {
-                card.classList.remove('selected');
+            document.body.appendChild(toast);
+            
+            // Inicializar y mostrar toast
+            const bsToast = new bootstrap.Toast(toast, { delay: 3000 });
+            bsToast.show();
+            
+            // Remover toast después de que se oculte
+            toast.addEventListener('hidden.bs.toast', () => {
+                toast.remove();
             });
-            
-            // Agregar selección actual
-            element.classList.add('selected');
-            selectedDriverId = driverId;
-            
-            // Mostrar botón de solicitar viaje
-            setTimeout(() => {
-                requestRide();
-            }, 500);
-        }
-
-        async function requestRide() {
-            if (!destinationLatLng || estimatedDistance === 0 || !selectedDriverId) {
-                alert('Por favor, completa todos los pasos primero');
-                return;
-            }
-
-            try {
-                // Calcular precio final
-                const finalPrice = calculatePriceFromDistance(estimatedDistance);
-                
-                // Crear solicitud de viaje
-                const rideData = {
-                    driver_id: selectedDriverId,
-                    client_id: currentClient.id,
-                    origen_lat: originLatLng.lat,
-                    origen_lng: originLatLng.lng,
-                    destino_lat: destinationLatLng.lat,
-                    destino_lng: destinationLatLng.lng,
-                    origen_direccion: originAddress,
-                    destino_direccion: destinationAddress,
-                    estado: 'solicitado',
-                    precio: finalPrice,
-                    distancia: estimatedDistance
-                };
-
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/rides`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${SUPABASE_KEY}`,
-                        'Prefer': 'return=representation'
-                    },
-                    body: JSON.stringify(rideData)
-                });
-
-                if (!response.ok) {
-                    throw new Error('Error al solicitar viaje');
-                }
-
-                const newRide = await response.json();
-                currentRide = newRide[0];
-                
-                // Mostrar paso 3
-                showStep3();
-                
-                // Iniciar verificación del estado del viaje
-                startRideCheck();
-                
-            } catch (error) {
-                console.error('Error al solicitar viaje:', error);
-                alert('Error al solicitar el viaje. Intente nuevamente.');
-            }
-        }
-
-        function startRideCheck() {
-            // Verificar estado del viaje cada 3 segundos
-            rideCheckInterval = setInterval(async () => {
-                await checkRideStatus();
-            }, 3000);
-        }
-
-        async function checkRideStatus() {
-            if (!currentRide) return;
-            
-            try {
-                const response = await fetch(
-                    `${SUPABASE_URL}/rest/v1/rides?id=eq.${currentRide.id}&select=*,drivers(nombre,tipo_vehiculo,modelo_vehiculo,placa_vehiculo)`,
-                    {
-                        headers: {
-                            'apikey': SUPABASE_KEY,
-                            'Authorization': `Bearer ${SUPABASE_KEY}`
-                        }
-                    }
-                );
-
-                if (!response.ok) {
-                    throw new Error('Error al verificar estado del viaje');
-                }
-
-                const rides = await response.json();
-                
-                if (rides.length > 0) {
-                    const ride = rides[0];
-                    currentRide = ride;
-                    
-                    if (ride.estado === 'aceptado') {
-                        // Conductor aceptó el viaje
-                        showActiveRideScreen(ride);
-                    } else if (ride.estado === 'cancelado') {
-                        // Conductor canceló el viaje
-                        alert('El conductor canceló tu solicitud');
-                        resetToMainScreen();
-                    } else if (ride.estado === 'en_camino') {
-                        // Conductor está en camino
-                        showActiveRideScreen(ride);
-                        updateRideProgress('en_camino');
-                    } else if (ride.estado === 'completado') {
-                        // Viaje completado
-                        alert('¡Viaje completado! Gracias por usar GC Ride');
-                        resetToMainScreen();
-                    }
-                }
-                
-            } catch (error) {
-                console.error('Error al verificar estado del viaje:', error);
-            }
-        }
-
-        function showActiveRideScreen(ride) {
-            showStep4();
-            
-            // Actualizar información del conductor
-            const driver = ride.drivers;
-            document.getElementById('driverInitial').textContent = driver.nombre.charAt(0).toUpperCase();
-            document.getElementById('driverName').textContent = driver.nombre;
-            document.getElementById('vehicleInfo').textContent = `${driver.tipo_vehiculo} - ${driver.modelo_vehiculo} (${driver.placa_vehiculo})`;
-            
-            // Actualizar información del viaje
-            document.getElementById('originAddressShort').textContent = 'Recogida';
-            document.getElementById('destinationAddressShort').textContent = 'Destino';
-            document.getElementById('ridePrice').textContent = ride.precio.toFixed(2) + ' Bs';
-            
-            // Actualizar estado
-            updateRideProgress(ride.estado);
-        }
-
-        function updateRideProgress(status) {
-            const progressBar = document.getElementById('rideProgress');
-            const etaText = document.getElementById('etaText');
-            const statusBadge = document.getElementById('rideStatusBadge');
-            
-            let progress = 0;
-            let eta = '';
-            let statusText = '';
-            let statusIcon = 'bi-clock';
-            
-            if (status === 'aceptado') {
-                progress = 30;
-                eta = '5-7 min';
-                statusText = 'Esperando conductor';
-                statusIcon = 'bi-clock';
-            } else if (status === 'en_camino') {
-                progress = 70;
-                eta = '3-5 min';
-                statusText = 'En camino';
-                statusIcon = 'bi-car-front';
-            } else if (status === 'completado') {
-                progress = 100;
-                eta = 'Llegó';
-                statusText = 'Completado';
-                statusIcon = 'bi-check-circle';
-            }
-            
-            progressBar.style.width = `${progress}%`;
-            etaText.textContent = eta;
-            statusBadge.innerHTML = `<i class="bi ${statusIcon}"></i><span>${statusText}</span>`;
-        }
-
-        async function cancelRideRequest() {
-            if (!currentRide) return;
-            
-            if (confirm('¿Estás seguro de que quieres cancelar la solicitud de viaje?')) {
-                try {
-                    // Actualizar estado del viaje a "cancelado"
-                    const response = await fetch(
-                        `${SUPABASE_URL}/rest/v1/rides?id=eq.${currentRide.id}`,
-                        {
-                            method: 'PATCH',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'apikey': SUPABASE_KEY,
-                                'Authorization': `Bearer ${SUPABASE_KEY}`,
-                                'Prefer': 'return=minimal'
-                            },
-                            body: JSON.stringify({
-                                estado: 'cancelado'
-                            })
-                        }
-                    );
-
-                    if (!response.ok) {
-                        throw new Error('Error al cancelar viaje');
-                    }
-                    
-                    resetToMainScreen();
-                    alert('Solicitud de viaje cancelada');
-                    
-                } catch (error) {
-                    console.error('Error al cancelar viaje:', error);
-                    alert('Error al cancelar el viaje. Intente nuevamente.');
-                }
-            }
-        }
-
-        async function cancelActiveRide() {
-            if (!currentRide) return;
-            
-            if (confirm('¿Estás seguro de que quieres cancelar este viaje?')) {
-                try {
-                    // Actualizar estado del viaje a "cancelado"
-                    const response = await fetch(
-                        `${SUPABASE_URL}/rest/v1/rides?id=eq.${currentRide.id}`,
-                        {
-                            method: 'PATCH',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'apikey': SUPABASE_KEY,
-                                'Authorization': `Bearer ${SUPABASE_KEY}`,
-                                'Prefer': 'return=minimal'
-                            },
-                            body: JSON.stringify({
-                                estado: 'cancelado'
-                            })
-                        }
-                    );
-
-                    if (!response.ok) {
-                        throw new Error('Error al cancelar viaje');
-                    }
-                    
-                    resetToMainScreen();
-                    alert('Viaje cancelado');
-                    
-                } catch (error) {
-                    console.error('Error al cancelar viaje:', error);
-                    alert('Error al cancelar el viaje. Intente nuevamente.');
-                }
-            }
-        }
-
-        function contactDriver() {
-            // En una app real, esto llamaría al conductor
-            alert('Función de llamada al conductor. En una app real, se realizaría la llamada.');
-        }
-
-        function showNewRide() {
-            resetToMainScreen();
         }
 
         function resetToMainScreen() {
-            // Limpiar estado del viaje
+            // Limpiar estado
             currentRide = null;
             selectedDriverId = null;
+            currentRequestData = null;
             
             // Detener verificación de viaje
             if (rideCheckInterval) {
@@ -1642,17 +1606,16 @@
                 rideCheckInterval = null;
             }
             
-            // Limpiar destino y ruta
-            clearDestination();
+            // Cerrar todos los overlays
+            document.getElementById('destinationOverlay').classList.remove('active');
+            document.getElementById('driversOverlay').classList.remove('active');
+            document.getElementById('requestOverlay').classList.remove('active');
             
-            // Mostrar paso 1
-            showStep1();
+            // Limpiar mapa
+            clearMap();
             
             // Ocultar botón de nuevo viaje
             document.getElementById('newRideBtn').classList.add('d-none');
-            
-            // Mostrar instrucciones del mapa
-            document.getElementById('mapInstructions').classList.remove('d-none');
         }
 
         async function checkActiveRide() {
@@ -1678,12 +1641,15 @@
                     currentRide = activeRides[0];
                     
                     if (currentRide.estado === 'solicitado') {
-                        showStep3();
-                    } else {
-                        showActiveRideScreen(currentRide);
+                        // Mostrar overlay de solicitud en curso
+                        document.getElementById('requestPrice').textContent = currentRide.precio.toFixed(2) + ' Bs';
+                        document.getElementById('requestOverlay').classList.add('active');
+                        startRideCheck();
+                    } else if (currentRide.estado === 'aceptado' || currentRide.estado === 'en_camino') {
+                        // Mostrar información del viaje activo
+                        showRideInProgress(currentRide);
+                        startRideCheck();
                     }
-                    
-                    startRideCheck();
                 }
                 
             } catch (error) {
@@ -1701,11 +1667,10 @@
                 Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
                 Math.sin(dLon/2) * Math.sin(dLon/2);
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-            const distance = R * c;
-            return distance;
+            return R * c;
         }
 
-        // Hacer función accesible globalmente
+        // Hacer funciones accesibles globalmente
         window.selectDriver = selectDriver;
     </script>
 </body>
