@@ -503,6 +503,16 @@
             animation: spin 1s linear infinite;
         }
         
+        .permission-message {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+        }
+        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -526,6 +536,13 @@
                     <label for="clientAge" class="form-label fw-bold">Tu Edad</label>
                     <input type="number" class="form-control app-form-control" id="clientAge" min="18" max="100" required placeholder="Ingresa tu edad">
                 </div>
+                
+                <div id="locationPermissionMessage" class="permission-message mb-4 d-none">
+                    <i class="bi bi-geo-alt fs-4 mb-2 d-block"></i>
+                    <h6 class="fw-bold">Permiso de Ubicación</h6>
+                    <small>Necesitamos tu ubicación para encontrar conductores cerca de ti. Por favor, acepta el permiso cuando tu navegador lo solicite.</small>
+                </div>
+                
                 <button type="submit" class="btn app-btn app-btn-primary w-100 text-white pulse-animation">
                     <i class="bi bi-car-front me-2"></i> Comenzar
                 </button>
@@ -794,6 +811,9 @@
         <!-- Overlay de carga -->
         <div id="loadingOverlay" class="loading-overlay d-none">
             <div class="loading-spinner"></div>
+            <div class="text-center mt-3">
+                <p id="loadingText" class="text-muted">Obteniendo ubicación...</p>
+            </div>
         </div>
     </div>
 
@@ -847,6 +867,22 @@
         // Inicializar la aplicación
         document.addEventListener('DOMContentLoaded', function() {
             initializeApp();
+            
+            // Mostrar mensaje de permiso de ubicación
+            document.getElementById('locationPermissionMessage').classList.remove('d-none');
+            
+            // Intentar obtener ubicación al cargar para verificar permisos
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        console.log('Permiso de ubicación concedido');
+                        document.getElementById('locationPermissionMessage').classList.add('d-none');
+                    },
+                    function(error) {
+                        console.log('Permiso de ubicación denegado o error:', error.message);
+                    }
+                );
+            }
         });
 
         function initializeApp() {
@@ -905,32 +941,75 @@
                 return;
             }
 
-            showLoading(true);
+            showLoading(true, 'Obteniendo tu ubicación...');
             
             try {
-                // Obtener ubicación actual
+                // Obtener ubicación actual con mejor manejo de errores
                 if (navigator.geolocation) {
+                    // Primero verificar si ya tenemos permisos
                     navigator.geolocation.getCurrentPosition(
                         async function(position) {
                             const lat = position.coords.latitude;
                             const lng = position.coords.longitude;
+                            showLoading(true, 'Obteniendo dirección...');
                             
                             // Obtener dirección desde coordenadas
-                            const address = await getAddressFromCoords(lat, lng);
-                            originAddress = address;
-                            originLatLng = [lat, lng];
-                            
-                            // Registrar cliente en la base de datos
-                            await registerClient(name, age, lat, lng);
-                            
-                            messageDiv.classList.add('d-none');
-                            showMainScreen();
-                            showLoading(false);
+                            try {
+                                const address = await getAddressFromCoords(lat, lng);
+                                originAddress = address;
+                                originLatLng = [lat, lng];
+                                
+                                showLoading(true, 'Registrando en el sistema...');
+                                
+                                // Registrar cliente en la base de datos
+                                await registerClient(name, age, lat, lng);
+                                
+                                messageDiv.classList.add('d-none');
+                                showMainScreen();
+                                showLoading(false);
+                                showToast('¡Registro exitoso!', 'success');
+                            } catch (addressError) {
+                                console.error('Error obteniendo dirección:', addressError);
+                                // Continuar con coordenadas si falla la dirección
+                                originAddress = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                                originLatLng = [lat, lng];
+                                
+                                await registerClient(name, age, lat, lng);
+                                
+                                messageDiv.textContent = 'Registro exitoso. Dirección obtenida por coordenadas.';
+                                messageDiv.classList.remove('d-none', 'alert-danger');
+                                messageDiv.classList.add('alert-warning');
+                                
+                                setTimeout(() => {
+                                    messageDiv.classList.add('d-none');
+                                }, 3000);
+                                
+                                showMainScreen();
+                                showLoading(false);
+                            }
                         },
                         async function(error) {
                             console.error('Error obteniendo ubicación:', error);
                             
-                            // Usar ubicación por defecto si falla
+                            // Mostrar mensaje específico según el error
+                            let errorMessage = '';
+                            switch(error.code) {
+                                case error.PERMISSION_DENIED:
+                                    errorMessage = 'Permiso de ubicación denegado. Usaremos una ubicación por defecto.';
+                                    break;
+                                case error.POSITION_UNAVAILABLE:
+                                    errorMessage = 'Información de ubicación no disponible.';
+                                    break;
+                                case error.TIMEOUT:
+                                    errorMessage = 'Tiempo de espera agotado.';
+                                    break;
+                                default:
+                                    errorMessage = 'Error desconocido al obtener ubicación.';
+                            }
+                            
+                            showLoading(true, 'Configurando ubicación por defecto...');
+                            
+                            // Usar ubicación por defecto (La Paz, Bolivia)
                             const defaultLat = -16.5000;
                             const defaultLng = -68.1500;
                             const defaultAddress = "La Paz, Bolivia";
@@ -941,16 +1020,17 @@
                             // Registrar cliente con ubicación por defecto
                             await registerClient(name, age, defaultLat, defaultLng);
                             
-                            messageDiv.textContent = 'Usando ubicación por defecto. Permite el acceso a ubicación para mejor precisión.';
+                            messageDiv.textContent = `${errorMessage} Usando ubicación por defecto: ${defaultAddress}`;
                             messageDiv.classList.remove('d-none', 'alert-danger');
                             messageDiv.classList.add('alert-warning');
                             
                             setTimeout(() => {
                                 messageDiv.classList.add('d-none');
-                            }, 3000);
+                            }, 5000);
                             
                             showMainScreen();
                             showLoading(false);
+                            showToast('Registro exitoso con ubicación por defecto', 'info');
                         },
                         {
                             enableHighAccuracy: true,
@@ -960,14 +1040,26 @@
                     );
                 } else {
                     showLoading(false);
-                    messageDiv.textContent = 'Tu navegador no soporta geolocalización.';
+                    messageDiv.textContent = 'Tu navegador no soporta geolocalización. Usaremos ubicación por defecto.';
                     messageDiv.classList.remove('d-none');
+                    
+                    // Usar ubicación por defecto
+                    const defaultLat = -16.5000;
+                    const defaultLng = -68.1500;
+                    const defaultAddress = "La Paz, Bolivia";
+                    
+                    originAddress = defaultAddress;
+                    originLatLng = [defaultLat, defaultLng];
+                    
+                    await registerClient(name, age, defaultLat, defaultLng);
+                    showMainScreen();
                 }
             } catch (error) {
                 console.error('Error en el registro:', error);
                 showLoading(false);
                 messageDiv.textContent = 'Error de conexión. Intente nuevamente.';
                 messageDiv.classList.remove('d-none');
+                showToast('Error en el registro', 'error');
             }
         }
 
@@ -978,7 +1070,8 @@
                     edad: parseInt(age),
                     latitud: lat,
                     longitud: lng,
-                    activo: true
+                    activo: true,
+                    fecha_registro: new Date().toISOString()
                 };
 
                 const response = await fetch(`${SUPABASE_URL}/rest/v1/clients`, {
@@ -1019,6 +1112,20 @@
             // Establecer ubicación actual en el campo
             if (originAddress) {
                 document.getElementById('originAddress').value = originAddress;
+            } else if (currentClient.latitud && currentClient.longitud) {
+                // Obtener dirección desde las coordenadas guardadas
+                getAddressFromCoords(currentClient.latitud, currentClient.longitud)
+                    .then(address => {
+                        originAddress = address;
+                        originLatLng = [currentClient.latitud, currentClient.longitud];
+                        document.getElementById('originAddress').value = address;
+                    })
+                    .catch(error => {
+                        console.error('Error obteniendo dirección:', error);
+                        originAddress = `${currentClient.latitud.toFixed(6)}, ${currentClient.longitud.toFixed(6)}`;
+                        originLatLng = [currentClient.latitud, currentClient.longitud];
+                        document.getElementById('originAddress').value = originAddress;
+                    });
             }
             
             // Iniciar seguimiento de ubicación
@@ -1029,7 +1136,7 @@
         }
 
         async function useCurrentLocation() {
-            showLoading(true);
+            showLoading(true, 'Obteniendo tu ubicación actual...');
             
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
@@ -1037,31 +1144,57 @@
                         const lat = position.coords.latitude;
                         const lng = position.coords.longitude;
                         
-                        // Obtener dirección desde coordenadas
-                        const address = await getAddressFromCoords(lat, lng);
-                        originAddress = address;
-                        originLatLng = [lat, lng];
+                        showLoading(true, 'Obteniendo dirección...');
                         
-                        // Actualizar campo
-                        document.getElementById('originAddress').value = address;
-                        
-                        // Actualizar en base de datos
-                        updateClientLocationInDB(lat, lng);
-                        
-                        // Calcular precio si hay destino
-                        if (destinationAddress) {
-                            calculatePriceAndDistance();
+                        try {
+                            // Obtener dirección desde coordenadas
+                            const address = await getAddressFromCoords(lat, lng);
+                            originAddress = address;
+                            originLatLng = [lat, lng];
+                            
+                            // Actualizar campo
+                            document.getElementById('originAddress').value = address;
+                            
+                            // Actualizar en base de datos
+                            updateClientLocationInDB(lat, lng);
+                            
+                            // Calcular precio si hay destino
+                            if (destinationAddress) {
+                                calculatePriceAndDistance();
+                            }
+                            
+                            showLoading(false);
+                            showToast('Ubicación actualizada correctamente', 'success');
+                            
+                        } catch (error) {
+                            console.error('Error obteniendo dirección:', error);
+                            originAddress = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                            originLatLng = [lat, lng];
+                            document.getElementById('originAddress').value = originAddress;
+                            
+                            updateClientLocationInDB(lat, lng);
+                            showLoading(false);
+                            showToast('Ubicación actualizada (coordenadas)', 'info');
                         }
-                        
-                        showLoading(false);
-                        
-                        // Mostrar notificación de éxito
-                        showToast('Ubicación actualizada correctamente', 'success');
                     },
                     function(error) {
                         console.error('Error obteniendo ubicación:', error);
                         showLoading(false);
-                        showToast('No se pudo obtener tu ubicación. Verifica los permisos.', 'error');
+                        
+                        let errorMessage = 'No se pudo obtener tu ubicación. ';
+                        switch(error.code) {
+                            case error.PERMISSION_DENIED:
+                                errorMessage += 'Por favor, permite el acceso a la ubicación en la configuración de tu navegador.';
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                errorMessage += 'El servicio de ubicación no está disponible.';
+                                break;
+                            case error.TIMEOUT:
+                                errorMessage += 'Tiempo de espera agotado. Intenta nuevamente.';
+                                break;
+                        }
+                        
+                        showToast(errorMessage, 'error');
                     },
                     {
                         enableHighAccuracy: true,
@@ -1069,10 +1202,19 @@
                         maximumAge: 0
                     }
                 );
+            } else {
+                showLoading(false);
+                showToast('Tu navegador no soporta geolocalización', 'error');
             }
         }
 
         function showMapForDestination() {
+            // Validar que tengamos ubicación actual
+            if (!originLatLng) {
+                showToast('Primero obtén tu ubicación actual', 'warning');
+                return;
+            }
+            
             // Ocultar selección de ubicaciones
             document.getElementById('locationSelectionSection').classList.add('d-none');
             document.getElementById('mapSection').classList.remove('d-none');
@@ -1101,9 +1243,8 @@
                 tap: true
             });
             
-            // Establecer vista inicial
-            const initialView = originLatLng || [-16.5000, -68.1500];
-            clientMap.setView(initialView, 15);
+            // Establecer vista inicial basada en ubicación actual
+            clientMap.setView(originLatLng, 15);
             
             // Agregar capa de OpenStreetMap con estilo mejorado
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -1112,7 +1253,7 @@
                 detectRetina: true
             }).addTo(clientMap);
             
-            // Agregar marcador de origen si existe
+            // Agregar marcador de origen
             if (originLatLng) {
                 if (clientMarker) {
                     clientMap.removeLayer(clientMarker);
@@ -1138,6 +1279,10 @@
                     
                 // Calcular ruta
                 calculateRoute(originLatLng, destinationLatLng);
+                
+                // Centrar en ambos puntos
+                const bounds = L.latLngBounds([originLatLng, destinationLatLng]);
+                clientMap.fitBounds(bounds, { padding: [50, 50] });
             }
             
             // Agregar evento de clic para seleccionar destino
@@ -1147,9 +1292,6 @@
             
             // Configurar geocoder para búsqueda
             setupGeocoder();
-            
-            // Centrar en ubicación actual
-            centerMapOnCurrentLocation();
         }
 
         async function selectDestinationOnMap(lat, lng) {
@@ -1167,20 +1309,31 @@
                 .openPopup();
             
             // Obtener dirección del destino
-            destinationAddress = await getAddressFromCoords(lat, lng);
+            try {
+                destinationAddress = await getAddressFromCoords(lat, lng);
+            } catch (error) {
+                console.error('Error obteniendo dirección:', error);
+                destinationAddress = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+            }
             
             // Actualizar interfaz
             document.getElementById('selectedDestination').textContent = destinationAddress;
             document.getElementById('destinationAddress').value = destinationAddress;
             
-            // Calcular ruta si hay origen
+            // Calcular ruta
             if (originLatLng) {
                 calculateRoute(originLatLng, destinationLatLng);
+                
+                // Ajustar vista para mostrar ambos puntos
+                const bounds = L.latLngBounds([originLatLng, destinationLatLng]);
+                clientMap.fitBounds(bounds, { padding: [50, 50] });
             }
         }
 
         function centerMapOnCurrentLocation() {
             if (!clientMap) return;
+            
+            showLoading(true, 'Centrando en tu ubicación...');
             
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
@@ -1200,16 +1353,19 @@
                         // Centrar mapa
                         clientMap.setView([lat, lng], 16);
                         
-                        // Actualizar origen si estamos en el mapa
-                        if (originLatLng) {
-                            originLatLng = [lat, lng];
-                            getAddressFromCoords(lat, lng).then(address => {
-                                originAddress = address;
-                            });
-                        }
+                        // Actualizar origen
+                        originLatLng = [lat, lng];
+                        getAddressFromCoords(lat, lng).then(address => {
+                            originAddress = address;
+                            document.getElementById('originAddress').value = address;
+                        });
+                        
+                        showLoading(false);
+                        showToast('Mapa centrado en tu ubicación', 'success');
                     },
                     function(error) {
                         console.error('Error obteniendo ubicación:', error);
+                        showLoading(false);
                         showToast('No se pudo obtener tu ubicación actual', 'error');
                     },
                     {
@@ -1217,6 +1373,9 @@
                         timeout: 5000
                     }
                 );
+            } else {
+                showLoading(false);
+                showToast('Tu navegador no soporta geolocalización', 'error');
             }
         }
 
@@ -1445,7 +1604,7 @@
         async function calculatePriceAndDistance() {
             if (!originLatLng || !destinationLatLng) return;
             
-            showLoading(true);
+            showLoading(true, 'Calculando ruta...');
             
             try {
                 // Usar OpenRouteService para calcular distancia
@@ -1454,11 +1613,11 @@
                 
                 // Actualizar UI
                 updatePriceAndDistance(distance, price);
+                showLoading(false);
             } catch (error) {
                 console.error('Error calculando distancia:', error);
-                showToast('Error calculando la ruta. Intenta nuevamente.', 'error');
-            } finally {
                 showLoading(false);
+                showToast('Error calculando la ruta. Intenta nuevamente.', 'error');
             }
         }
 
@@ -1534,6 +1693,12 @@
                 navigator.geolocation.clearWatch(watchId);
             }
             
+            // Solo iniciar seguimiento si el navegador soporta geolocalización
+            if (!navigator.geolocation) {
+                console.log('Geolocalización no soportada');
+                return;
+            }
+            
             // Configurar seguimiento de ubicación en tiempo real
             watchId = navigator.geolocation.watchPosition(
                 async function(position) {
@@ -1556,6 +1721,7 @@
                 },
                 function(error) {
                     console.error('Error en seguimiento de ubicación:', error);
+                    // No mostrar error al usuario para no interrumpir la experiencia
                 },
                 {
                     enableHighAccuracy: true,
@@ -1708,7 +1874,7 @@
         }
 
         async function requestRide(driverId) {
-            showLoading(true);
+            showLoading(true, 'Enviando solicitud...');
             
             try {
                 // Calcular distancia y precio final
@@ -1909,7 +2075,7 @@
             if (!currentRide) return;
             
             if (confirm('¿Estás seguro de que quieres cancelar la solicitud?')) {
-                showLoading(true);
+                showLoading(true, 'Cancelando solicitud...');
                 
                 try {
                     const response = await fetch(
@@ -1949,7 +2115,7 @@
             if (!currentRide) return;
             
             if (confirm('¿Estás seguro de que quieres cancelar este viaje? Se aplicará una tarifa por cancelación.')) {
-                showLoading(true);
+                showLoading(true, 'Cancelando viaje...');
                 
                 try {
                     const response = await fetch(
@@ -2075,7 +2241,7 @@
             }
         }
 
-        // Función para obtener dirección desde coordenadas
+        // Función para obtener dirección desde coordenadas (con mejor manejo de errores)
         async function getAddressFromCoords(lat, lng) {
             try {
                 const response = await fetch(
@@ -2087,13 +2253,22 @@
                     }
                 );
                 
+                if (!response.ok) {
+                    throw new Error(`Error HTTP: ${response.status}`);
+                }
+                
                 const data = await response.json();
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
                 if (data.display_name) {
                     return data.display_name;
                 }
                 return `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
             } catch (error) {
                 console.error('Error obteniendo dirección:', error);
+                // Devolver coordenadas formateadas como fallback
                 return `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
             }
         }
@@ -2120,11 +2295,12 @@
                 toastContainer.id = 'toastContainer';
                 toastContainer.style.cssText = `
                     position: fixed;
-                    top: 20px;
+                    top: 80px;
                     left: 50%;
                     transform: translateX(-50%);
                     z-index: 9999;
                     max-width: 90%;
+                    width: 400px;
                 `;
                 document.body.appendChild(toastContainer);
             }
@@ -2138,16 +2314,21 @@
             
             toastContainer.appendChild(toast);
             
-            // Auto-eliminar después de 3 segundos
+            // Auto-eliminar después de 4 segundos
             setTimeout(() => {
-                toast.remove();
-            }, 3000);
+                if (toast.parentNode) {
+                    toast.remove();
+                }
+            }, 4000);
         }
 
-        // Función para mostrar/ocultar overlay de carga
-        function showLoading(show) {
+        // Función para mostrar/ocultar overlay de carga con mensaje
+        function showLoading(show, message = 'Cargando...') {
             const overlay = document.getElementById('loadingOverlay');
+            const loadingText = document.getElementById('loadingText');
+            
             if (show) {
+                loadingText.textContent = message;
                 overlay.classList.remove('d-none');
             } else {
                 overlay.classList.add('d-none');
